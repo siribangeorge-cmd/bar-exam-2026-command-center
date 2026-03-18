@@ -451,6 +451,7 @@ function renderApp() {
     <div class="shell">
       <section class="hero">
         <article class="card hero-card">
+          <p class="hero-credit">Made by siribangeorge</p>
           <p class="eyebrow">Bar Exam 2026</p>
           <h1>Command Center</h1>
           <p>
@@ -699,7 +700,7 @@ function renderApp() {
         </div>
       </section>
 
-      <p class="footer-note">Bar Exam 2026 Command Center web edition. Data is stored in this browser using local storage. Made by siribangeorge.</p>
+      <p class="footer-note">Bar Exam 2026 Command Center web edition. Data is stored in this browser using local storage.</p>
     </div>
   `;
 
