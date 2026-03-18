@@ -893,6 +893,7 @@ function countdownText() {
   const now = Date.now();
   const diffMs = Math.max(EXAM_START.getTime() - now, 0);
   const days = Math.max(Math.ceil(diffMs / 86400000), 0);
+  const exactDays = Math.floor(diffMs / 86400000);
   const hours = Math.floor((diffMs % 86400000) / 3600000);
   const minutes = Math.floor((diffMs % 3600000) / 60000);
   const seconds = Math.floor((diffMs % 60000) / 1000);
@@ -908,7 +909,7 @@ function countdownText() {
 
   return {
     daysLabel: `${days} ${days === 1 ? "day" : "days"} left`,
-    detailLabel: `${detailFormatter.format(EXAM_START)} Manila time • ${pad(hours)}:${pad(minutes)}:${pad(seconds)} within the current day window`,
+    detailLabel: `${detailFormatter.format(EXAM_START)} Manila time • Exact countdown: ${exactDays}d ${pad(hours)}h ${pad(minutes)}m ${pad(seconds)}s`,
   };
 }
 
