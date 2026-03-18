@@ -1,0 +1,523 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A10000000000000000000001 /* FocusLockApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000001 /* FocusLockApp.swift */; };
+		A10000000000000000000002 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000002 /* AppModel.swift */; };
+		A10000000000000000000003 /* PomodoroTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000003 /* PomodoroTimer.swift */; };
+		A10000000000000000000004 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000004 /* ContentView.swift */; };
+		A10000000000000000000005 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000005 /* DashboardView.swift */; };
+		A10000000000000000000006 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000006 /* HistoryView.swift */; };
+		A10000000000000000000007 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000007 /* SettingsView.swift */; };
+		A10000000000000000000008 /* ProgressRing.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000008 /* ProgressRing.swift */; };
+		A10000000000000000000009 /* ScreenTimeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000009 /* ScreenTimeManager.swift */; };
+		A1000000000000000000000A /* AppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000A /* AppGroup.swift */; };
+		A1000000000000000000000B /* SharedModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000B /* SharedModels.swift */; };
+		A1000000000000000000000C /* SharedStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000C /* SharedStore.swift */; };
+		A1000000000000000000000D /* FocusModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000D /* FocusModels.swift */; };
+		A1000000000000000000000E /* FocusAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000E /* FocusAnalytics.swift */; };
+		A1000000000000000000000F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000F /* Assets.xcassets */; };
+		A10000000000000000000010 /* ActivityMonitorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000010 /* ActivityMonitorExtension.swift */; };
+		A10000000000000000000011 /* AppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000A /* AppGroup.swift */; };
+		A10000000000000000000012 /* SharedModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000B /* SharedModels.swift */; };
+		A10000000000000000000013 /* SharedStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000C /* SharedStore.swift */; };
+		A10000000000000000000014 /* FocusModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000D /* FocusModels.swift */; };
+		A10000000000000000000015 /* FocusAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000E /* FocusAnalytics.swift */; };
+		A10000000000000000000016 /* FocusLockActivityMonitor.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = A20000000000000000000013 /* FocusLockActivityMonitor.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		A10000000000000000000017 /* PomodoroTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000003 /* PomodoroTimer.swift */; };
+		A10000000000000000000018 /* SyllabusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000017 /* SyllabusView.swift */; };
+		A10000000000000000000019 /* 2026-Bar-Bulletin.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000018 /* 2026-Bar-Bulletin.pdf */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		A30000000000000000000001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A40000000000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A50000000000000000000002;
+			remoteInfo = FocusLockActivityMonitor;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		A60000000000000000000001 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				A10000000000000000000016 /* FocusLockActivityMonitor.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		A20000000000000000000001 /* FocusLockApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusLockApp.swift; sourceTree = "<group>"; };
+		A20000000000000000000002 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
+		A20000000000000000000003 /* PomodoroTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PomodoroTimer.swift; sourceTree = "<group>"; };
+		A20000000000000000000004 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		A20000000000000000000005 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
+		A20000000000000000000006 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
+		A20000000000000000000007 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		A20000000000000000000008 /* ProgressRing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressRing.swift; sourceTree = "<group>"; };
+		A20000000000000000000009 /* ScreenTimeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenTimeManager.swift; sourceTree = "<group>"; };
+		A2000000000000000000000A /* AppGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGroup.swift; sourceTree = "<group>"; };
+		A2000000000000000000000B /* SharedModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedModels.swift; sourceTree = "<group>"; };
+		A2000000000000000000000C /* SharedStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedStore.swift; sourceTree = "<group>"; };
+		A2000000000000000000000D /* FocusModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = FocusModels.swift; path = Sources/FocusLockCore/FocusModels.swift; sourceTree = SOURCE_ROOT; };
+		A2000000000000000000000E /* FocusAnalytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = FocusAnalytics.swift; path = Sources/FocusLockCore/FocusAnalytics.swift; sourceTree = SOURCE_ROOT; };
+		A2000000000000000000000F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A20000000000000000000010 /* ActivityMonitorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityMonitorExtension.swift; sourceTree = "<group>"; };
+		A20000000000000000000011 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A20000000000000000000012 /* FocusLock.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FocusLock.entitlements; sourceTree = "<group>"; };
+		A20000000000000000000013 /* FocusLockActivityMonitor.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = FocusLockActivityMonitor.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		A20000000000000000000014 /* FocusLock.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FocusLock.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A20000000000000000000015 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A20000000000000000000016 /* ActivityMonitor.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ActivityMonitor.entitlements; sourceTree = "<group>"; };
+		A20000000000000000000017 /* SyllabusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyllabusView.swift; sourceTree = "<group>"; };
+		A20000000000000000000018 /* 2026-Bar-Bulletin.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "2026-Bar-Bulletin.pdf"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A70000000000000000000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A70000000000000000000002 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A80000000000000000000001 = {
+			isa = PBXGroup;
+			children = (
+				A80000000000000000000002 /* FocusLock */,
+				A80000000000000000000003 /* FocusLockShared */,
+				A80000000000000000000004 /* Sources */,
+				A80000000000000000000005 /* Extensions */,
+				A80000000000000000000006 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A80000000000000000000002 /* FocusLock */ = {
+			isa = PBXGroup;
+			children = (
+				A80000000000000000000007 /* App */,
+				A80000000000000000000008 /* Views */,
+				A80000000000000000000009 /* ScreenTime */,
+				A8000000000000000000000C /* Resources */,
+				A2000000000000000000000F /* Assets.xcassets */,
+				A20000000000000000000011 /* Info.plist */,
+				A20000000000000000000012 /* FocusLock.entitlements */,
+			);
+			path = FocusLock;
+			sourceTree = SOURCE_ROOT;
+		};
+		A80000000000000000000003 /* FocusLockShared */ = {
+			isa = PBXGroup;
+			children = (
+				A2000000000000000000000A /* AppGroup.swift */,
+				A2000000000000000000000B /* SharedModels.swift */,
+				A2000000000000000000000C /* SharedStore.swift */,
+			);
+			path = FocusLockShared;
+			sourceTree = SOURCE_ROOT;
+		};
+		A80000000000000000000004 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				A2000000000000000000000D /* FocusModels.swift */,
+				A2000000000000000000000E /* FocusAnalytics.swift */,
+			);
+			path = Sources/FocusLockCore;
+			sourceTree = SOURCE_ROOT;
+		};
+		A80000000000000000000005 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				A8000000000000000000000A /* ActivityMonitor */,
+			);
+			path = Extensions;
+			sourceTree = SOURCE_ROOT;
+		};
+		A80000000000000000000006 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000014 /* FocusLock.app */,
+				A20000000000000000000013 /* FocusLockActivityMonitor.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A80000000000000000000007 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000001 /* FocusLockApp.swift */,
+				A20000000000000000000002 /* AppModel.swift */,
+				A20000000000000000000003 /* PomodoroTimer.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		A80000000000000000000008 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000004 /* ContentView.swift */,
+				A20000000000000000000005 /* DashboardView.swift */,
+				A20000000000000000000006 /* HistoryView.swift */,
+				A20000000000000000000007 /* SettingsView.swift */,
+				A20000000000000000000017 /* SyllabusView.swift */,
+				A8000000000000000000000B /* Components */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A80000000000000000000009 /* ScreenTime */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000009 /* ScreenTimeManager.swift */,
+			);
+			path = ScreenTime;
+			sourceTree = "<group>";
+		};
+		A8000000000000000000000A /* ActivityMonitor */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000010 /* ActivityMonitorExtension.swift */,
+				A20000000000000000000015 /* Info.plist */,
+				A20000000000000000000016 /* ActivityMonitor.entitlements */,
+			);
+			path = ActivityMonitor;
+			sourceTree = "<group>";
+		};
+		A8000000000000000000000B /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000008 /* ProgressRing.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		A8000000000000000000000C /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000018 /* 2026-Bar-Bulletin.pdf */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A50000000000000000000001 /* FocusLock */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A90000000000000000000001 /* Build configuration list for PBXNativeTarget "FocusLock" */;
+			buildPhases = (
+				AA0000000000000000000001 /* Sources */,
+				A70000000000000000000001 /* Frameworks */,
+				AB0000000000000000000001 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FocusLock;
+			productName = FocusLock;
+			productReference = A20000000000000000000014 /* FocusLock.app */;
+			productType = "com.apple.product-type.application";
+		};
+		A50000000000000000000002 /* FocusLockActivityMonitor */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A90000000000000000000002 /* Build configuration list for PBXNativeTarget "FocusLockActivityMonitor" */;
+			buildPhases = (
+				AA0000000000000000000002 /* Sources */,
+				A70000000000000000000002 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FocusLockActivityMonitor;
+			productName = FocusLockActivityMonitor;
+			productReference = A20000000000000000000013 /* FocusLockActivityMonitor.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A40000000000000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1600;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					A50000000000000000000001 = {
+						CreatedOnToolsVersion = 16.0;
+					};
+					A50000000000000000000002 = {
+						CreatedOnToolsVersion = 16.0;
+					};
+				};
+			};
+			buildConfigurationList = A90000000000000000000003 /* Build configuration list for PBXProject "FocusLock" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = A80000000000000000000001;
+			productRefGroup = A80000000000000000000006 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A50000000000000000000001 /* FocusLock */,
+				A50000000000000000000002 /* FocusLockActivityMonitor */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		AB0000000000000000000001 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1000000000000000000000F /* Assets.xcassets in Resources */,
+				A10000000000000000000019 /* 2026-Bar-Bulletin.pdf in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		AA0000000000000000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10000000000000000000001 /* FocusLockApp.swift in Sources */,
+				A10000000000000000000002 /* AppModel.swift in Sources */,
+				A10000000000000000000003 /* PomodoroTimer.swift in Sources */,
+				A10000000000000000000004 /* ContentView.swift in Sources */,
+				A10000000000000000000005 /* DashboardView.swift in Sources */,
+				A10000000000000000000006 /* HistoryView.swift in Sources */,
+				A10000000000000000000007 /* SettingsView.swift in Sources */,
+				A10000000000000000000018 /* SyllabusView.swift in Sources */,
+				A10000000000000000000008 /* ProgressRing.swift in Sources */,
+				A10000000000000000000009 /* ScreenTimeManager.swift in Sources */,
+				A1000000000000000000000A /* AppGroup.swift in Sources */,
+				A1000000000000000000000B /* SharedModels.swift in Sources */,
+				A1000000000000000000000C /* SharedStore.swift in Sources */,
+				A1000000000000000000000D /* FocusModels.swift in Sources */,
+				A1000000000000000000000E /* FocusAnalytics.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AA0000000000000000000002 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10000000000000000000010 /* ActivityMonitorExtension.swift in Sources */,
+				A10000000000000000000011 /* AppGroup.swift in Sources */,
+				A10000000000000000000012 /* SharedModels.swift in Sources */,
+				A10000000000000000000013 /* SharedStore.swift in Sources */,
+				A10000000000000000000014 /* FocusModels.swift in Sources */,
+				A10000000000000000000015 /* FocusAnalytics.swift in Sources */,
+				A10000000000000000000017 /* PomodoroTimer.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		AC0000000000000000000001 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A50000000000000000000002 /* FocusLockActivityMonitor */;
+			targetProxy = A30000000000000000000001 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		AD0000000000000000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		AD0000000000000000000002 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		AD0000000000000000000003 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = FocusLock/Info.plist;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.georgesiriban.FocusLock;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		AD0000000000000000000004 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = FocusLock/Info.plist;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.georgesiriban.FocusLock;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		AD0000000000000000000005 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = Extensions/ActivityMonitor/ActivityMonitor.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Extensions/ActivityMonitor/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.georgesiriban.FocusLock.ActivityMonitor;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		AD0000000000000000000006 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = Extensions/ActivityMonitor/ActivityMonitor.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Extensions/ActivityMonitor/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.georgesiriban.FocusLock.ActivityMonitor;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A90000000000000000000001 /* Build configuration list for PBXNativeTarget "FocusLock" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AD0000000000000000000003 /* Debug */,
+				AD0000000000000000000004 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A90000000000000000000002 /* Build configuration list for PBXNativeTarget "FocusLockActivityMonitor" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AD0000000000000000000005 /* Debug */,
+				AD0000000000000000000006 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A90000000000000000000003 /* Build configuration list for PBXProject "FocusLock" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AD0000000000000000000001 /* Debug */,
+				AD0000000000000000000002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A40000000000000000000001 /* Project object */;
+}
