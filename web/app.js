@@ -348,6 +348,7 @@ function transitionAfterCurrentPhase(referenceTime, shouldRecordFocus) {
       }
     } else {
       soundEngine.playBreakComplete(currentPhase === "longBreak");
+      soundEngine.playFocusStart(320);
     }
   }
 }
@@ -455,6 +456,14 @@ function toggleTimer() {
   } else {
     state.timer.isRunning = true;
     state.timer.endsAt = new Date(Date.now() + state.timer.remainingSeconds * 1000).toISOString();
+
+    if (state.settings.soundEnabled) {
+      if (state.timer.phase === "focus") {
+        soundEngine.playFocusStart();
+      } else {
+        soundEngine.playBreakStart();
+      }
+    }
   }
   saveTimer();
 }
@@ -751,7 +760,7 @@ function renderApp() {
                 <input id="soundEnabled" type="checkbox" data-setting-boolean="soundEnabled" ${state.settings.soundEnabled ? "checked" : ""}>
               </label>
             </div>
-            <p class="setting-help">Focus complete: warm chime. Break complete: light bell. Daily target reached: brighter success cue.</p>
+            <p class="setting-help">Focus start: productive lift-off cue. Focus complete: warm chime. Break complete: light bell. Daily target reached: brighter success cue.</p>
             <div class="button-row" style="margin-top: 14px;">
               <button class="button button-secondary" data-action="preview-sound">Preview Sound</button>
             </div>
@@ -1080,13 +1089,13 @@ function createSoundEngine() {
     }
   }
 
-  function playPattern(pattern) {
+  function playPattern(pattern, delayMs = 0) {
     const context = getContext();
     if (!context || context.state === "suspended") {
       return;
     }
 
-    const startAt = context.currentTime + 0.02;
+    const startAt = context.currentTime + 0.02 + delayMs / 1000;
 
     pattern.forEach((note) => {
       const oscillator = context.createOscillator();
@@ -1108,9 +1117,25 @@ function createSoundEngine() {
     preview() {
       arm();
       playPattern([
-        { frequency: 659.25, offset: 0, duration: 0.28, gain: 0.05, type: "sine" },
-        { frequency: 783.99, offset: 0.16, duration: 0.35, gain: 0.04, type: "triangle" },
+        { frequency: 392.0, offset: 0, duration: 0.12, gain: 0.03, type: "triangle" },
+        { frequency: 523.25, offset: 0.08, duration: 0.16, gain: 0.036, type: "triangle" },
+        { frequency: 659.25, offset: 0.18, duration: 0.22, gain: 0.04, type: "sine" },
       ]);
+    },
+    playFocusStart(delayMs = 0) {
+      arm();
+      playPattern([
+        { frequency: 392.0, offset: 0, duration: 0.12, gain: 0.03, type: "triangle" },
+        { frequency: 523.25, offset: 0.08, duration: 0.16, gain: 0.036, type: "triangle" },
+        { frequency: 659.25, offset: 0.18, duration: 0.22, gain: 0.04, type: "sine" },
+      ], delayMs);
+    },
+    playBreakStart(delayMs = 0) {
+      arm();
+      playPattern([
+        { frequency: 493.88, offset: 0, duration: 0.1, gain: 0.02, type: "sine" },
+        { frequency: 587.33, offset: 0.08, duration: 0.14, gain: 0.024, type: "triangle" },
+      ], delayMs);
     },
     playFocusComplete(isLongBreak) {
       arm();
