@@ -76,8 +76,22 @@ select {
   padding: 28px;
 }
 
+.hero-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.hero-logo {
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.28);
+}
+
 .hero-credit {
-  margin: 0 0 18px;
+  margin: 0;
   color: var(--muted);
   font-size: 1rem;
   font-weight: 500;
@@ -529,6 +543,25 @@ select {
 .setting-group label {
   color: var(--muted);
   font-size: 0.92rem;
+}
+
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.toggle-row input[type="checkbox"] {
+  width: 22px;
+  height: 22px;
+  accent-color: var(--gold);
+}
+
+.setting-help {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
 }
 
 .footer-note {

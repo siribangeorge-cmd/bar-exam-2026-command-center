@@ -2,21 +2,10 @@ import SwiftUI
 
 @main
 struct FocusLockApp: App {
-    @Environment(\.scenePhase) private var scenePhase
-    @StateObject private var model = AppModel()
-
     var body: some Scene {
-        WindowGroup {
-            ContentView(model: model)
-                .onAppear {
-                    model.bootstrap()
-                }
-                .onChange(of: scenePhase) { phase in
-                    if phase == .active {
-                        model.refreshOnForeground()
-                    }
-                }
+        WindowGroup("Bar Exam 2026 Command Center") {
+            ContentView()
         }
-        .windowResizability(.contentSize)
+        .defaultSize(width: 1360, height: 900)
     }
 }

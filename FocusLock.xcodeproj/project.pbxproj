@@ -231,6 +231,7 @@
 				AA0000000000000000000001 /* Sources */,
 				A70000000000000000000001 /* Frameworks */,
 				AB0000000000000000000001 /* Resources */,
+				AE0000000000000000000001 /* Bundle Web App */,
 			);
 			buildRules = (
 			);
@@ -305,6 +306,27 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		AE0000000000000000000001 /* Bundle Web App */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Bundle Web App";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\nWEB_APP_DIR=\"$SRCROOT/web\"\nDEST_DIR=\"$TARGET_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH/WebApp\"\nrm -rf \"$DEST_DIR\"\nmkdir -p \"$DEST_DIR\"\nditto \"$WEB_APP_DIR\" \"$DEST_DIR\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		AA0000000000000000000001 /* Sources */ = {

@@ -4,6 +4,7 @@ export const DEFAULT_SETTINGS = {
   shortBreakMinutes: 10,
   longBreakMinutes: 25,
   sessionsBeforeLongBreak: 4,
+  soundEnabled: true,
 };
 
 export const STATUS_META = [

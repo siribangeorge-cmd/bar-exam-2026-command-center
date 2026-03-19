@@ -40,6 +40,7 @@ const state = {
   selectedSubjectId: SUBJECTS[0]?.id ?? "",
   searchText: "",
 };
+const soundEngine = createSoundEngine();
 
 state.timer = loadTimer(state.settings);
 reconcileTimerState();
@@ -113,6 +114,7 @@ function normalizeSettings(raw) {
     shortBreakMinutes: Math.max(Number(raw?.shortBreakMinutes) || DEFAULT_SETTINGS.shortBreakMinutes, 1),
     longBreakMinutes: Math.max(Number(raw?.longBreakMinutes) || DEFAULT_SETTINGS.longBreakMinutes, 5),
     sessionsBeforeLongBreak: Math.max(Number(raw?.sessionsBeforeLongBreak) || DEFAULT_SETTINGS.sessionsBeforeLongBreak, 2),
+    soundEnabled: raw?.soundEnabled ?? DEFAULT_SETTINGS.soundEnabled,
   };
 }
 
@@ -192,6 +194,16 @@ function getRecentDailyHistory(days = 30) {
   }
 
   return history;
+}
+
+function totalMinutesForDate(date) {
+  const dayStart = startOfDay(date);
+  const dayEnd = new Date(dayStart);
+  dayEnd.setDate(dayStart.getDate() + 1);
+
+  return state.sessions.reduce((sum, session) => {
+    return sum + overlappingMinutes(session, dayStart, dayEnd);
+  }, 0);
 }
 
 function overlappingMinutes(session, intervalStart, intervalEnd) {
@@ -297,8 +309,12 @@ function reconcileTimerState() {
 
 function transitionAfterCurrentPhase(referenceTime, shouldRecordFocus) {
   const currentPhase = state.timer.phase;
+  const referenceDate = new Date(referenceTime);
+  let targetJustHit = false;
+
   if (currentPhase === "focus" && shouldRecordFocus) {
     const durationMs = state.settings.focusMinutes * 60 * 1000;
+    const previousTodayMinutes = totalMinutesForDate(referenceDate);
     const session = {
       id: crypto.randomUUID(),
       startAt: new Date(referenceTime - durationMs).toISOString(),
@@ -308,6 +324,8 @@ function transitionAfterCurrentPhase(referenceTime, shouldRecordFocus) {
     state.sessions.sort((left, right) => new Date(left.startAt) - new Date(right.startAt));
     saveSessions();
     state.timer.completedFocusCycles += 1;
+    targetJustHit = previousTodayMinutes < state.settings.dailyTargetMinutes
+      && previousTodayMinutes + state.settings.focusMinutes >= state.settings.dailyTargetMinutes;
   }
 
   const nextPhase = currentPhase === "focus"
@@ -320,6 +338,18 @@ function transitionAfterCurrentPhase(referenceTime, shouldRecordFocus) {
   state.timer.remainingSeconds = nextDuration;
   state.timer.endsAt = new Date(Date.now() + nextDuration * 1000).toISOString();
   saveTimer();
+
+  if (state.settings.soundEnabled) {
+    if (currentPhase === "focus") {
+      if (targetJustHit) {
+        soundEngine.playTargetHit();
+      } else {
+        soundEngine.playFocusComplete(nextPhase === "longBreak");
+      }
+    } else {
+      soundEngine.playBreakComplete(currentPhase === "longBreak");
+    }
+  }
 }
 
 function handleTick() {
@@ -337,6 +367,8 @@ function handleClick(event) {
   if (!button) {
     return;
   }
+
+  soundEngine.arm();
 
   const subjectId = button.getAttribute("data-subject-id");
   if (subjectId) {
@@ -362,6 +394,8 @@ function handleClick(event) {
   } else if (action === "reset-syllabus") {
     state.syllabusStatuses = {};
     saveSyllabusStatuses();
+  } else if (action === "preview-sound") {
+    soundEngine.preview();
   }
 
   renderApp();
@@ -399,6 +433,15 @@ function handleChange(event) {
 
     saveSettings();
     saveTimer();
+    renderApp();
+    return;
+  }
+
+  if (target.matches("[data-setting-boolean]")) {
+    const key = target.getAttribute("data-setting-boolean");
+    state.settings[key] = target.checked;
+    state.settings = normalizeSettings(state.settings);
+    saveSettings();
     renderApp();
   }
 }
@@ -451,7 +494,10 @@ function renderApp() {
     <div class="shell">
       <section class="hero">
         <article class="card hero-card">
-          <p class="hero-credit">Made by siribangeorge</p>
+          <div class="hero-brand">
+            <img class="hero-logo" src="./assets/app-icon-192.png" alt="Bar Exam 2026 logo">
+            <p class="hero-credit">Made by siribangeorge</p>
+          </div>
           <p class="eyebrow">Bar Exam 2026</p>
           <h1>Command Center</h1>
           <p>
@@ -695,6 +741,19 @@ function renderApp() {
             <div class="setting-group">
               <label for="sessionsBeforeLongBreak">Focus sessions before long break</label>
               <input class="input" id="sessionsBeforeLongBreak" type="number" min="2" step="1" data-setting="sessionsBeforeLongBreak" value="${state.settings.sessionsBeforeLongBreak}">
+            </div>
+          </article>
+          <article class="card settings-card">
+            <h3>Sound Cues</h3>
+            <div class="setting-group">
+              <label class="toggle-row" for="soundEnabled">
+                <span>Play Pomodoro milestone sounds</span>
+                <input id="soundEnabled" type="checkbox" data-setting-boolean="soundEnabled" ${state.settings.soundEnabled ? "checked" : ""}>
+              </label>
+            </div>
+            <p class="setting-help">Focus complete: warm chime. Break complete: light bell. Daily target reached: brighter success cue.</p>
+            <div class="button-row" style="margin-top: 14px;">
+              <button class="button button-secondary" data-action="preview-sound">Preview Sound</button>
             </div>
           </article>
         </div>
@@ -992,4 +1051,104 @@ function escapeAttribute(value) {
     .replaceAll("\"", "&quot;")
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;");
+}
+
+function createSoundEngine() {
+  let audioContext = null;
+
+  function getContext() {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) {
+      return null;
+    }
+
+    if (!audioContext) {
+      audioContext = new AudioContextClass();
+    }
+
+    return audioContext;
+  }
+
+  function arm() {
+    const context = getContext();
+    if (!context) {
+      return;
+    }
+
+    if (context.state === "suspended") {
+      context.resume().catch(() => {});
+    }
+  }
+
+  function playPattern(pattern) {
+    const context = getContext();
+    if (!context || context.state === "suspended") {
+      return;
+    }
+
+    const startAt = context.currentTime + 0.02;
+
+    pattern.forEach((note) => {
+      const oscillator = context.createOscillator();
+      const gain = context.createGain();
+      oscillator.type = note.type ?? "sine";
+      oscillator.frequency.setValueAtTime(note.frequency, startAt + note.offset);
+      gain.gain.setValueAtTime(0.0001, startAt + note.offset);
+      gain.gain.exponentialRampToValueAtTime(note.gain ?? 0.045, startAt + note.offset + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, startAt + note.offset + note.duration);
+      oscillator.connect(gain);
+      gain.connect(context.destination);
+      oscillator.start(startAt + note.offset);
+      oscillator.stop(startAt + note.offset + note.duration + 0.03);
+    });
+  }
+
+  return {
+    arm,
+    preview() {
+      arm();
+      playPattern([
+        { frequency: 659.25, offset: 0, duration: 0.28, gain: 0.05, type: "sine" },
+        { frequency: 783.99, offset: 0.16, duration: 0.35, gain: 0.04, type: "triangle" },
+      ]);
+    },
+    playFocusComplete(isLongBreak) {
+      arm();
+      playPattern(
+        isLongBreak
+          ? [
+              { frequency: 523.25, offset: 0, duration: 0.30, gain: 0.05, type: "triangle" },
+              { frequency: 659.25, offset: 0.18, duration: 0.32, gain: 0.045, type: "triangle" },
+              { frequency: 783.99, offset: 0.36, duration: 0.46, gain: 0.04, type: "sine" },
+            ]
+          : [
+              { frequency: 587.33, offset: 0, duration: 0.24, gain: 0.045, type: "triangle" },
+              { frequency: 698.46, offset: 0.12, duration: 0.30, gain: 0.04, type: "sine" },
+            ],
+      );
+    },
+    playBreakComplete(isLongBreak) {
+      arm();
+      playPattern(
+        isLongBreak
+          ? [
+              { frequency: 493.88, offset: 0, duration: 0.20, gain: 0.04, type: "sine" },
+              { frequency: 659.25, offset: 0.14, duration: 0.26, gain: 0.032, type: "triangle" },
+            ]
+          : [
+              { frequency: 783.99, offset: 0, duration: 0.16, gain: 0.03, type: "sine" },
+              { frequency: 1046.5, offset: 0.1, duration: 0.18, gain: 0.02, type: "sine" },
+            ],
+      );
+    },
+    playTargetHit() {
+      arm();
+      playPattern([
+        { frequency: 523.25, offset: 0, duration: 0.22, gain: 0.045, type: "triangle" },
+        { frequency: 659.25, offset: 0.12, duration: 0.24, gain: 0.04, type: "triangle" },
+        { frequency: 783.99, offset: 0.24, duration: 0.28, gain: 0.04, type: "sine" },
+        { frequency: 1046.5, offset: 0.36, duration: 0.40, gain: 0.035, type: "sine" },
+      ]);
+    },
+  };
 }
