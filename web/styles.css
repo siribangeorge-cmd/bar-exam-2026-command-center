@@ -235,8 +235,8 @@ select {
   position: relative;
   z-index: 1;
   display: grid;
-  gap: 8px;
-  padding: 16px;
+  gap: 6px;
+  padding: 14px;
   border-radius: 20px;
   background: linear-gradient(180deg, rgba(255, 212, 134, 0.1), rgba(255, 255, 255, 0.03));
   border: 1px solid rgba(255, 212, 134, 0.14);
@@ -250,16 +250,16 @@ select {
 }
 
 .nav-summary-value {
-  font-size: 1.7rem;
-  line-height: 1;
+  font-size: 1.45rem;
+  line-height: 1.05;
   color: var(--gold-strong);
 }
 
 .nav-summary-copy {
   margin: 0;
   color: var(--muted);
-  font-size: 0.82rem;
-  line-height: 1.35;
+  font-size: 0.76rem;
+  line-height: 1.28;
 }
 
 .nav-summary-grid,
@@ -290,7 +290,7 @@ select {
 .summary-card,
 .mini-card,
 .schedule-item {
-  padding: 14px;
+  padding: 12px;
 }
 
 .workspace-shell {
@@ -311,8 +311,8 @@ select {
 .workspace-kicker,
 .eyebrow,
 .metric-label {
-  margin: 0 0 8px;
-  font-size: 0.78rem;
+  margin: 0 0 6px;
+  font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 0.18em;
   color: var(--gold);
