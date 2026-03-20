@@ -568,6 +568,10 @@ function renderApp() {
         <nav class="nav-menu">
           ${NAV_ITEMS.map((item) => renderNavButton(item, data)).join("")}
         </nav>
+        <aside class="sidebar-quote">
+          <p class="sidebar-quote-kicker">Keep going</p>
+          <p class="sidebar-quote-text">You got this, Atty.</p>
+        </aside>
       </aside>
 
       <section class="workspace-shell">

@@ -98,7 +98,7 @@ select {
   max-height: calc(100vh - 40px);
   padding: 22px;
   display: grid;
-  grid-template-rows: auto 1fr;
+  grid-template-rows: auto 1fr auto;
   gap: 16px;
   align-content: start;
 }
@@ -164,6 +164,33 @@ select {
   display: grid;
   gap: 8px;
   align-content: start;
+}
+
+.sidebar-quote {
+  position: relative;
+  z-index: 1;
+  margin-top: auto;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(255, 212, 134, 0.08), rgba(255, 255, 255, 0.025));
+  border: 1px solid rgba(255, 212, 134, 0.14);
+}
+
+.sidebar-quote-kicker {
+  margin: 0 0 8px;
+  color: var(--gold-strong);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-weight: 700;
+}
+
+.sidebar-quote-text {
+  margin: 0;
+  font-family: "Fraunces", "Georgia", serif;
+  font-size: 1.1rem;
+  line-height: 1.2;
+  color: var(--text);
 }
 
 .nav-button {
