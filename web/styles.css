@@ -43,6 +43,8 @@ body {
   margin: 0;
   min-height: 100vh;
   font-family: "Space Grotesk", "Avenir Next", sans-serif;
+  font-size: 15px;
+  line-height: 1.45;
   background: var(--bg);
   background-image: var(--bg-layer);
   color: var(--text);
@@ -324,7 +326,7 @@ select {
 }
 
 .workspace-title-block h2 {
-  font-size: clamp(2rem, 4vw, 3.3rem);
+  font-size: clamp(1.85rem, 3.8vw, 3rem);
   line-height: 0.98;
 }
 
@@ -359,7 +361,7 @@ select {
 .dashboard-countdown {
   margin: 0;
   font-family: "Fraunces", "Georgia", serif;
-  font-size: clamp(3.4rem, 7vw, 5.8rem);
+  font-size: clamp(3rem, 6.3vw, 5.1rem);
   line-height: 0.95;
   color: var(--gold-strong);
   font-variant-numeric: tabular-nums;
@@ -387,7 +389,7 @@ select {
 }
 
 .pulse-pill strong {
-  font-size: 1.18rem;
+  font-size: 1.08rem;
 }
 
 .page-shell {
@@ -436,7 +438,7 @@ select {
 .subject-list,
 .subject-pane,
 .pdf-pane {
-  padding: 24px;
+  padding: 22px;
 }
 
 .marquee-card {
@@ -481,7 +483,7 @@ select {
 .mini-card strong {
   display: block;
   margin-top: 6px;
-  font-size: 1.28rem;
+  font-size: 1.14rem;
 }
 
 .stat-card h3,
@@ -492,11 +494,11 @@ select {
 .subject-list h3,
 .pdf-pane h3 {
   margin: 0 0 14px;
-  font-size: 1rem;
+  font-size: 0.96rem;
 }
 
 .big-number {
-  font-size: clamp(2.2rem, 4vw, 3.4rem);
+  font-size: clamp(1.95rem, 3.6vw, 3rem);
   line-height: 1;
   font-weight: 700;
 }
@@ -507,7 +509,7 @@ select {
 }
 
 .metric-value {
-  font-size: clamp(2rem, 4vw, 3.3rem);
+  font-size: clamp(1.8rem, 3.7vw, 2.9rem);
   line-height: 1;
   color: var(--gold-strong);
   font-weight: 700;
@@ -515,7 +517,7 @@ select {
 
 .metric-note {
   color: var(--muted);
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   line-height: 1.55;
 }
 
@@ -553,10 +555,11 @@ select {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 14px;
+  padding: 8px 12px;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   background: rgba(255, 255, 255, 0.05);
+  font-size: 0.9rem;
 }
 
 .phase-chip {
@@ -567,7 +570,7 @@ select {
 
 .session-state {
   color: var(--muted);
-  font-size: 0.92rem;
+  font-size: 0.88rem;
 }
 
 .timer-headline-row,
@@ -587,7 +590,7 @@ select {
 }
 
 .timer-clock-large {
-  font-size: clamp(4rem, 10vw, 7rem);
+  font-size: clamp(3.6rem, 9vw, 6.2rem);
   line-height: 0.95;
   margin: 12px 0;
 }
@@ -610,7 +613,7 @@ select {
 .button {
   border: 0;
   border-radius: 16px;
-  padding: 12px 18px;
+  padding: 11px 16px;
   cursor: pointer;
   transition: transform 220ms var(--ease-smooth), opacity 220ms var(--ease-smooth), background 220ms var(--ease-smooth), border-color 220ms var(--ease-smooth);
 }
@@ -649,7 +652,7 @@ select {
 
 .schedule-top {
   color: var(--gold-strong);
-  font-size: 0.92rem;
+  font-size: 0.86rem;
   font-weight: 700;
 }
 
@@ -722,11 +725,11 @@ select {
 .subject-list p,
 .subject-pane p,
 .pdf-pane p {
-  line-height: 1.65;
+  line-height: 1.55;
 }
 
 .subject-button {
-  padding: 16px;
+  padding: 14px;
   text-align: left;
   color: var(--text);
   cursor: pointer;
@@ -744,6 +747,7 @@ select {
 
 .subject-button small {
   color: var(--muted);
+  font-size: 0.8rem;
 }
 
 .subject-meta {
@@ -757,11 +761,12 @@ select {
 .input,
 .select {
   width: 100%;
-  padding: 13px 15px;
+  padding: 11px 13px;
   border-radius: 15px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   background: rgba(255, 255, 255, 0.05);
   color: var(--text);
+  font-size: 0.95rem;
   outline: none;
   transition: border-color 220ms var(--ease-smooth), box-shadow 220ms var(--ease-smooth), background 220ms var(--ease-smooth);
 }
@@ -798,18 +803,29 @@ select {
 }
 
 .section-row {
-  padding: 18px;
+  padding: 16px;
   background: var(--status-soft, rgba(255, 255, 255, 0.05));
   border-color: color-mix(in srgb, var(--status-color, #ffffff) 28%, transparent);
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 240px;
-  gap: 18px;
+  grid-template-columns: minmax(0, 1fr) 210px;
+  gap: 14px;
+  align-items: start;
+}
+
+.section-row strong {
+  font-size: 0.95rem;
+  line-height: 1.22;
+}
+
+.section-note {
+  font-size: 0.9rem;
+  line-height: 1.45;
 }
 
 .status-badge {
   background: color-mix(in srgb, var(--status-color, #ffffff) 18%, transparent);
   border-color: color-mix(in srgb, var(--status-color, #ffffff) 28%, transparent);
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .pdf-frame {
