@@ -568,23 +568,6 @@ function renderApp() {
         <nav class="nav-menu">
           ${NAV_ITEMS.map((item) => renderNavButton(item, data)).join("")}
         </nav>
-        <div class="nav-footer-stack">
-          <article class="nav-summary">
-            <span class="metric-label">Until first exam</span>
-            <strong class="nav-summary-value" id="countdown-days-side">${countdown.daysLabel}</strong>
-            <p class="nav-summary-copy" id="countdown-detail-side">${countdown.sideLabel}</p>
-            <div class="nav-summary-grid">
-              <div class="nav-summary-tile">
-                <span class="subdued">Today</span>
-                <strong>${formatHours(data.today.totalHours)}</strong>
-              </div>
-              <div class="nav-summary-tile">
-                <span class="subdued">Coverage</span>
-                <strong>${Math.round(data.syllabusRatio * 100)}%</strong>
-              </div>
-            </div>
-          </article>
-        </div>
       </aside>
 
       <section class="workspace-shell">
@@ -1391,21 +1374,16 @@ function countdownText() {
   return {
     daysLabel: `${days} ${days === 1 ? "day" : "days"} left`,
     detailLabel: `${detailFormatter.format(EXAM_START)} Manila time • Exact countdown: ${exactDays}d ${pad(hours)}h ${pad(minutes)}m ${pad(seconds)}s`,
-    sideLabel: `${detailFormatter.format(EXAM_START)} Manila time`,
   };
 }
 
 function updateCountdownUI() {
   const countdown = countdownText();
-  for (const id of ["countdown-days-side", "countdown-days-top"]) {
+  for (const id of ["countdown-days-top"]) {
     const node = document.getElementById(id);
     if (node) {
       node.textContent = countdown.daysLabel;
     }
-  }
-  const sideNode = document.getElementById("countdown-detail-side");
-  if (sideNode) {
-    sideNode.textContent = countdown.sideLabel;
   }
   const topNode = document.getElementById("countdown-detail-top");
   if (topNode) {

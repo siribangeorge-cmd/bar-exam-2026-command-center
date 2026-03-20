@@ -98,7 +98,7 @@ select {
   max-height: calc(100vh - 40px);
   padding: 22px;
   display: grid;
-  grid-template-rows: auto auto 1fr;
+  grid-template-rows: auto 1fr;
   gap: 16px;
   align-content: start;
 }
@@ -166,12 +166,6 @@ select {
   align-content: start;
 }
 
-.nav-footer-stack {
-  display: grid;
-  gap: 14px;
-  margin-top: auto;
-}
-
 .nav-button {
   position: relative;
   display: grid;
@@ -233,45 +227,17 @@ select {
   font-weight: 700;
 }
 
-.nav-summary {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  gap: 6px;
-  padding: 14px;
-  border-radius: 20px;
-  background: linear-gradient(180deg, rgba(255, 212, 134, 0.1), rgba(255, 255, 255, 0.03));
-  border: 1px solid rgba(255, 212, 134, 0.14);
-}
-
-.nav-summary-value,
 .metric-value,
 .big-number,
 .timer-clock {
   font-variant-numeric: tabular-nums;
 }
-
-.nav-summary-value {
-  font-size: 1.45rem;
-  line-height: 1.05;
-  color: var(--gold-strong);
-}
-
-.nav-summary-copy {
-  margin: 0;
-  color: var(--muted);
-  font-size: 0.76rem;
-  line-height: 1.28;
-}
-
-.nav-summary-grid,
 .subject-hero-stats {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
 }
 
-.nav-summary-tile,
 .marquee-metric,
 .mini-card,
 .schedule-item,
@@ -287,7 +253,6 @@ select {
   border-radius: 18px;
 }
 
-.nav-summary-tile,
 .marquee-metric,
 .summary-card,
 .mini-card,
@@ -982,7 +947,6 @@ select {
   .workspace-pulse,
   .summary-grid,
   .summary-grid-2,
-  .nav-summary-grid,
   .subject-hero-stats,
   .legend-grid,
   .settings-grid,
