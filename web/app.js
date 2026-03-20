@@ -11,6 +11,7 @@ const STORAGE_KEYS = {
   sessions: "bar2026.sessions",
   syllabusStatuses: "bar2026.syllabusStatuses",
   timer: "bar2026.timer",
+  activeView: "bar2026.activeView",
 };
 
 const EXAM_START = new Date("2026-09-06T08:00:00+08:00");
@@ -28,6 +29,33 @@ const PHASE_META = {
     description: "A full reset after a strong block streak. Stretch, eat, and recover.",
   },
 };
+const NAV_ITEMS = [
+  {
+    id: "dashboard",
+    label: "Dashboard",
+    shortLabel: "Overview, countdown, and exam map",
+  },
+  {
+    id: "pomodoro",
+    label: "Pomodoro",
+    shortLabel: "Focus timer and daily target",
+  },
+  {
+    id: "syllabus",
+    label: "Syllabus",
+    shortLabel: "Track official coverage by subject",
+  },
+  {
+    id: "insights",
+    label: "Insights",
+    shortLabel: "Study graphs and rhythm analysis",
+  },
+  {
+    id: "settings",
+    label: "Settings",
+    shortLabel: "Targets, sound, and timing setup",
+  },
+];
 
 const statusMap = new Map(STATUS_META.map((status) => [status.id, status]));
 const subjectMap = new Map(SUBJECTS.map((subject) => [subject.id, subject]));
@@ -39,6 +67,7 @@ const state = {
   timer: null,
   selectedSubjectId: SUBJECTS[0]?.id ?? "",
   searchText: "",
+  activeView: loadActiveView(),
 };
 const soundEngine = createSoundEngine();
 
@@ -105,6 +134,15 @@ function loadTimer(settings) {
 
 function saveTimer() {
   localStorage.setItem(STORAGE_KEYS.timer, JSON.stringify(state.timer));
+}
+
+function loadActiveView() {
+  const raw = localStorage.getItem(STORAGE_KEYS.activeView);
+  return NAV_ITEMS.some((item) => item.id === raw) ? raw : "dashboard";
+}
+
+function saveActiveView() {
+  localStorage.setItem(STORAGE_KEYS.activeView, state.activeView);
 }
 
 function normalizeSettings(raw) {
@@ -364,12 +402,20 @@ function handleTick() {
 }
 
 function handleClick(event) {
-  const button = event.target.closest("[data-action], [data-subject-id], [data-open-pdf]");
+  const button = event.target.closest("[data-action], [data-subject-id], [data-open-pdf], [data-view]");
   if (!button) {
     return;
   }
 
   soundEngine.arm();
+
+  const nextView = button.getAttribute("data-view");
+  if (nextView) {
+    state.activeView = nextView;
+    saveActiveView();
+    renderApp();
+    return;
+  }
 
   const subjectId = button.getAttribute("data-subject-id");
   if (subjectId) {
@@ -498,282 +544,544 @@ function renderApp() {
     }
     return section.title.toLowerCase().includes(query);
   });
+  const countdown = countdownText();
+  const meta = viewMeta();
 
   document.querySelector("#app").innerHTML = `
-    <div class="shell">
-      <section class="hero">
-        <article class="card hero-card">
-          <div class="hero-brand">
-            <img class="hero-logo" src="./assets/app-icon-192.png" alt="Bar Exam 2026 logo">
-            <p class="hero-credit">Made by siribangeorge</p>
+    <div class="app-shell">
+      <aside class="card nav-shell">
+        <div class="nav-aura"></div>
+        <div class="nav-head">
+          <img class="brand-mark" src="./assets/app-icon-192.png" alt="Bar Exam 2026 logo">
+          <div class="brand-copy">
+            <p class="brand-overline">Made by siribangeorge</p>
+            <h1>Bar Exam 2026</h1>
+            <p>Command Center</p>
           </div>
-          <p class="eyebrow">Bar Exam 2026</p>
-          <h1>Command Center</h1>
-          <p>
-            Track the syllabus from your bulletin, run focused study blocks, and turn raw hours into something
-            you can actually read before September 6, 2026.
-          </p>
-          <div class="hero-list">
-            <span class="pill">Interactive syllabus status map</span>
-            <span class="pill">Real-time exam countdown</span>
-            <span class="pill">Pomodoro with study history</span>
-            <span class="pill">Daily and weekday analytics</span>
+        </div>
+        <nav class="nav-menu">
+          ${NAV_ITEMS.map((item) => renderNavButton(item, data)).join("")}
+        </nav>
+        <article class="nav-summary">
+          <span class="metric-label">Until first exam</span>
+          <strong class="nav-summary-value" id="countdown-days-side">${countdown.daysLabel}</strong>
+          <p class="nav-summary-copy" id="countdown-detail-side">${countdown.detailLabel}</p>
+          <div class="nav-summary-grid">
+            <div class="nav-summary-tile">
+              <span class="subdued">Today</span>
+              <strong>${formatHours(data.today.totalHours)}</strong>
+            </div>
+            <div class="nav-summary-tile">
+              <span class="subdued">Coverage</span>
+              <strong>${Math.round(data.syllabusRatio * 100)}%</strong>
+            </div>
           </div>
         </article>
-        <aside class="card hero-side">
-          <div class="metric">
-            <span class="metric-label">Countdown</span>
-            <span class="metric-value" id="countdown-days">${countdownText().daysLabel}</span>
-            <span class="metric-note" id="countdown-detail">${countdownText().detailLabel}</span>
-          </div>
-          <div class="metric">
-            <span class="metric-label">Today</span>
-            <span class="metric-value">${formatHours(data.today.totalMinutes / 60)}</span>
-            <span class="metric-note">${formatHours(state.settings.dailyTargetMinutes / 60)} target hours</span>
-          </div>
-        </aside>
-      </section>
+      </aside>
 
-      <section class="section-block">
-        <div class="section-header">
-          <div class="section-title">
-            <h2>Overview</h2>
-            <p>The dashboard surfaces your countdown, coverage, study load, and exam-week map in one place.</p>
+      <section class="workspace-shell">
+        <header class="card workspace-topbar">
+          <div class="workspace-title-block">
+            <p class="workspace-kicker">${meta.kicker}</p>
+            <h2>${meta.title}</h2>
+            <p class="workspace-copy">${meta.description}</p>
           </div>
-        </div>
-        <div class="grid-3">
-          ${renderCountdownCard()}
-          ${renderTargetCard(data)}
-          ${renderSyllabusCoverageCard(data)}
-        </div>
-      </section>
+          <div class="workspace-pulse">
+            <div class="pulse-pill">
+              <span class="subdued">Target</span>
+              <strong>${formatHours(state.settings.dailyTargetMinutes / 60)}</strong>
+            </div>
+            <div class="pulse-pill">
+              <span class="subdued">Focus</span>
+              <strong>${state.settings.focusMinutes} min</strong>
+            </div>
+            <div class="pulse-pill">
+              <span class="subdued">Ready</span>
+              <strong>${data.examReadySections}/${TOTAL_SECTIONS}</strong>
+            </div>
+          </div>
+        </header>
 
-      <section class="section-block">
-        <div class="timer-layout">
-          <article class="card panel">
-            <h3>Pomodoro Timer</h3>
-            <div class="timer-stage">
-              <div class="phase-chip" id="timer-phase">${PHASE_META[state.timer.phase].title}</div>
-              <div class="timer-clock" id="timer-clock">${formatClock(state.timer.remainingSeconds)}</div>
-              <p class="subdued" id="timer-note">${PHASE_META[state.timer.phase].description}</p>
-              <div class="timer-chip-row">
-                <span class="pill">${state.timer.completedFocusCycles} focus blocks done</span>
-                <span class="pill">${state.timer.isRunning ? "Running now" : "Paused"}</span>
-              </div>
-              <div class="button-row">
-                <button class="button button-primary" data-action="toggle-timer">${state.timer.isRunning ? "Pause" : "Start"}</button>
-                <button class="button button-secondary" data-action="skip-phase">Skip</button>
-                <button class="button button-danger" data-action="reset-timer">Reset Timer</button>
-              </div>
-            </div>
-          </article>
-          <article class="card panel">
-            <h3>Exam Week Map</h3>
-            <div class="schedule-list">
-              ${EXAM_SCHEDULE.map(renderScheduleItem).join("")}
-            </div>
-          </article>
-        </div>
-        <div class="mini-grid">
-          <div class="mini-card">
-            <span class="subdued">Focus block</span>
-            <strong>${state.settings.focusMinutes} min</strong>
-          </div>
-          <div class="mini-card">
-            <span class="subdued">Short break</span>
-            <strong>${state.settings.shortBreakMinutes} min</strong>
-          </div>
-          <div class="mini-card">
-            <span class="subdued">Long break</span>
-            <strong>${state.settings.longBreakMinutes} min</strong>
-          </div>
-        </div>
+        <main class="page-shell">
+          ${renderActiveView(data, currentSubject, filteredSections)}
+        </main>
       </section>
-
-      <section class="section-block">
-        <div class="grid-2">
-          <article class="card chart-card">
-            <h3>Study Pulse</h3>
-            <div class="chart-shell">${renderDailyChart(data.recent14, state.settings.dailyTargetMinutes / 60)}</div>
-            <div class="chart-caption">Last 14 days. Green means target met, amber means close, red means a weak day, and dim bars mean no recorded study.</div>
-          </article>
-          <article class="card chart-card">
-            <h3>Insights Snapshot</h3>
-            <div class="summary-grid">
-              <div class="summary-card">
-                <span class="subdued">All-time logged</span>
-                <strong>${formatHours(data.allTimeMinutes / 60)}</strong>
-              </div>
-              <div class="summary-card">
-                <span class="subdued">Good days</span>
-                <strong>${data.goodDays}</strong>
-              </div>
-              <div class="summary-card">
-                <span class="subdued">Needs rescue</span>
-                <strong>${data.weakerDays}</strong>
-              </div>
-              <div class="summary-card">
-                <span class="subdued">Best streak</span>
-                <strong>${data.bestStreak} ${data.bestStreak === 1 ? "day" : "days"}</strong>
-              </div>
-            </div>
-            <div class="chart-shell" style="margin-top: 14px;">${renderWeekdayChart(data.weekdayAverages)}</div>
-            <div class="chart-caption">
-              Strongest weekday: ${data.bestWeekday?.label ?? "N/A"}.
-              Best day: ${data.bestDay ? `${formatShortDate(data.bestDay.dayStart)} at ${formatHours(data.bestDay.totalHours)}` : "No sessions yet"}.
-            </div>
-          </article>
-        </div>
-      </section>
-
-      <section class="section-block">
-        <div class="section-header">
-          <div class="section-title">
-            <h2>Syllabus</h2>
-            <p>Each section can be color-coded and tied back to the official bulletin pages for that subject.</p>
-          </div>
-          <button class="button button-secondary" data-action="reset-syllabus">Reset All Statuses</button>
-        </div>
-        <div class="syllabus-layout">
-          <aside class="card subject-list">
-            <h3>Subjects</h3>
-            <p>Select a subject to inspect its coverage and jump to the matching bulletin page range.</p>
-            <div class="subject-buttons">
-              ${SUBJECTS.map((subject) => renderSubjectButton(subject)).join("")}
-            </div>
-          </aside>
-          <article class="card subject-pane">
-            <h2>${currentSubject.title}</h2>
-            <p class="subject-meta">${currentSubject.examWindow} • ${currentSubject.examDay} • ${currentSubject.weight}</p>
-            <p>${currentSubject.summary}</p>
-            <div class="field-row">
-              <input class="input" type="search" data-search placeholder="Filter sections" value="${escapeAttribute(state.searchText)}">
-              <span class="pill">Bulletin pages ${currentSubject.bulletinPageRange[0]}-${currentSubject.bulletinPageRange[1]}</span>
-            </div>
-            <div class="legend-grid">
-              ${STATUS_META.map((status) => `
-                <div class="legend-item" style="background:${status.soft};">
-                  <strong><span class="color-dot" style="background:${status.color};"></span>${status.shortTitle}</strong>
-                  <span class="subdued">${status.title}</span>
-                </div>
-              `).join("")}
-            </div>
-            <div class="section-list">
-              ${filteredSections.map((section) => renderSectionRow(section)).join("")}
-            </div>
-          </article>
-          <article class="card pdf-pane">
-            <h3>Bulletin PDF</h3>
-            <p>The embedded viewer opens directly to this subject's page range. If the preview is blank on a browser, open the PDF in a new tab.</p>
-            <div class="button-row" style="margin-bottom: 14px;">
-              <button class="button button-secondary" data-open-pdf="true">Open PDF in New Tab</button>
-            </div>
-            <iframe
-              class="pdf-frame"
-              title="2026 Bar Bulletin"
-              src="${pdfURLForSubject(currentSubject)}"
-            ></iframe>
-          </article>
-        </div>
-      </section>
-
-      <section class="section-block">
-        <div class="section-header">
-          <div class="section-title">
-            <h2>Analytics</h2>
-            <p>This is where your friends can compare what a strong study week looks like against a flat one.</p>
-          </div>
-        </div>
-        <div class="grid-2">
-          <article class="card chart-card">
-            <h3>Last 30 Days</h3>
-            <div class="chart-shell">${renderDailyChart(data.recent30, state.settings.dailyTargetMinutes / 60)}</div>
-            <div class="chart-caption">Each bar is one day of recorded study from your Pomodoro sessions.</div>
-          </article>
-          <article class="card chart-card">
-            <h3>What the Graph Says</h3>
-            <div class="summary-grid">
-              <div class="summary-card">
-                <span class="subdued">Today</span>
-                <strong>${formatHours(data.today.totalHours)}</strong>
-              </div>
-              <div class="summary-card">
-                <span class="subdued">Target completion</span>
-                <strong>${Math.round(Math.min(completionRatio(data.today), 1) * 100)}%</strong>
-              </div>
-              <div class="summary-card">
-                <span class="subdued">Exam-ready sections</span>
-                <strong>${data.examReadySections}/${TOTAL_SECTIONS}</strong>
-              </div>
-              <div class="summary-card">
-                <span class="subdued">Coverage score</span>
-                <strong>${Math.round(data.syllabusRatio * 100)}%</strong>
-              </div>
-            </div>
-            <p class="chart-caption">
-              Good study days are counted when you reach at least 80% of your target. Rescue days are days with some study
-              logged but less than 40% of target.
-            </p>
-          </article>
-        </div>
-      </section>
-
-      <section class="section-block">
-        <div class="section-header">
-          <div class="section-title">
-            <h2>Settings</h2>
-            <p>Adjust the daily target and Pomodoro lengths. These changes are saved only in this browser.</p>
-          </div>
-        </div>
-        <div class="settings-grid">
-          <article class="card settings-card">
-            <h3>Study Goals</h3>
-            <div class="setting-group">
-              <label for="dailyTargetMinutes">Daily target minutes</label>
-              <input class="input" id="dailyTargetMinutes" type="number" min="30" step="30" data-setting="dailyTargetMinutes" value="${state.settings.dailyTargetMinutes}">
-            </div>
-          </article>
-          <article class="card settings-card">
-            <h3>Pomodoro Lengths</h3>
-            <div class="setting-group">
-              <label for="focusMinutes">Focus minutes</label>
-              <input class="input" id="focusMinutes" type="number" min="5" step="5" data-setting="focusMinutes" value="${state.settings.focusMinutes}">
-            </div>
-            <div class="setting-group">
-              <label for="shortBreakMinutes">Short break minutes</label>
-              <input class="input" id="shortBreakMinutes" type="number" min="1" step="1" data-setting="shortBreakMinutes" value="${state.settings.shortBreakMinutes}">
-            </div>
-            <div class="setting-group">
-              <label for="longBreakMinutes">Long break minutes</label>
-              <input class="input" id="longBreakMinutes" type="number" min="5" step="5" data-setting="longBreakMinutes" value="${state.settings.longBreakMinutes}">
-            </div>
-            <div class="setting-group">
-              <label for="sessionsBeforeLongBreak">Focus sessions before long break</label>
-              <input class="input" id="sessionsBeforeLongBreak" type="number" min="2" step="1" data-setting="sessionsBeforeLongBreak" value="${state.settings.sessionsBeforeLongBreak}">
-            </div>
-          </article>
-          <article class="card settings-card">
-            <h3>Sound Cues</h3>
-            <div class="setting-group">
-              <label class="toggle-row" for="soundEnabled">
-                <span>Play Pomodoro milestone sounds</span>
-                <input id="soundEnabled" type="checkbox" data-setting-boolean="soundEnabled" ${state.settings.soundEnabled ? "checked" : ""}>
-              </label>
-            </div>
-            <p class="setting-help">Focus start: productive lift-off cue. Focus complete: warm chime. Break complete: light bell. Daily target reached: brighter success cue.</p>
-            <div class="button-row" style="margin-top: 14px;">
-              <button class="button button-secondary" data-action="preview-sound">Preview Sound</button>
-            </div>
-          </article>
-        </div>
-      </section>
-
-      <p class="footer-note">Bar Exam 2026 Command Center web edition. Data is stored in this browser using local storage.</p>
     </div>
   `;
 
   updateCountdownUI();
   updateTimerUI();
+}
+
+function viewMeta() {
+  if (state.activeView === "pomodoro") {
+    return {
+      kicker: "Focus Studio",
+      title: "Pomodoro Sessions",
+      description: "Run clean study blocks, keep the timer front and center, and see exactly how today is stacking up against your target.",
+    };
+  }
+
+  if (state.activeView === "syllabus") {
+    return {
+      kicker: "Syllabus Atlas",
+      title: "Official Coverage Tracker",
+      description: "Navigate the main Roman numeral topics subject by subject, color-code your mastery, and keep the bulletin PDF beside you.",
+    };
+  }
+
+  if (state.activeView === "insights") {
+    return {
+      kicker: "Performance Room",
+      title: "Study Insights",
+      description: "Review your recent output, identify your strongest rhythm, and separate strong study days from the ones that need recovery.",
+    };
+  }
+
+  if (state.activeView === "settings") {
+    return {
+      kicker: "System Controls",
+      title: "App Preferences",
+      description: "Tune your targets, Pomodoro lengths, and audio cues so the dashboard fits the way you actually study.",
+    };
+  }
+
+  return {
+    kicker: "Command Deck",
+    title: "Premium Overview",
+    description: "A cleaner, more organized command center for the final stretch to the bar, with every major workflow split into its own room.",
+  };
+}
+
+function renderNavButton(item, data) {
+  const activeClass = item.id === state.activeView ? "is-active" : "";
+  let meta = item.shortLabel;
+
+  if (item.id === "dashboard") {
+    meta = countdownText().daysLabel;
+  } else if (item.id === "pomodoro") {
+    meta = `${state.timer.completedFocusCycles} blocks done`;
+  } else if (item.id === "syllabus") {
+    meta = `${data.examReadySections}/${TOTAL_SECTIONS} exam-ready`;
+  } else if (item.id === "insights") {
+    meta = `${data.goodDays} strong days`;
+  } else if (item.id === "settings") {
+    meta = `${state.settings.focusMinutes}/${state.settings.shortBreakMinutes}/${state.settings.longBreakMinutes} min`;
+  }
+
+  return `
+    <button class="nav-button ${activeClass}" data-view="${item.id}">
+      <span class="nav-button-line"></span>
+      <span class="nav-button-body">
+        <strong>${item.label}</strong>
+        <small>${item.shortLabel}</small>
+      </span>
+      <span class="nav-button-meta">${meta}</span>
+    </button>
+  `;
+}
+
+function renderActiveView(data, currentSubject, filteredSections) {
+  if (state.activeView === "pomodoro") {
+    return renderPomodoroView(data);
+  }
+
+  if (state.activeView === "syllabus") {
+    return renderSyllabusView(currentSubject, filteredSections);
+  }
+
+  if (state.activeView === "insights") {
+    return renderInsightsView(data);
+  }
+
+  if (state.activeView === "settings") {
+    return renderSettingsView();
+  }
+
+  return renderDashboardView(data);
+}
+
+function renderDashboardView(data) {
+  return `
+    <section class="page-section dashboard-hero-grid">
+      <article class="card marquee-card">
+        <p class="eyebrow">Expensive feel, faster workflow</p>
+        <h3 class="marquee-title">Your bar prep dashboard now works like a proper Mac app, not a long scrolling page.</h3>
+        <p class="marquee-copy">
+          The main rooms are now separated so you can jump straight into your timer, syllabus, or insights without losing time.
+          Everything important still stays visible, but in a cleaner premium layout.
+        </p>
+        <div class="marquee-strip">
+          <span class="pill">Dedicated pages</span>
+          <span class="pill">Fixed navigation</span>
+          <span class="pill">Cleaner gradients</span>
+          <span class="pill">Smoother transitions</span>
+        </div>
+        <div class="marquee-metrics">
+          <div class="marquee-metric">
+            <span class="subdued">Today</span>
+            <strong>${formatHours(data.today.totalHours)}</strong>
+          </div>
+          <div class="marquee-metric">
+            <span class="subdued">Coverage</span>
+            <strong>${Math.round(data.syllabusRatio * 100)}%</strong>
+          </div>
+          <div class="marquee-metric">
+            <span class="subdued">Best streak</span>
+            <strong>${data.bestStreak} ${data.bestStreak === 1 ? "day" : "days"}</strong>
+          </div>
+        </div>
+      </article>
+
+      <div class="dashboard-side-stack">
+        ${renderCountdownCard()}
+        ${renderTargetCard(data)}
+      </div>
+    </section>
+
+    <section class="content-grid cols-2">
+      ${renderSyllabusCoverageCard(data)}
+      <article class="card panel">
+        <h3>Exam Week Map</h3>
+        <div class="schedule-list">
+          ${EXAM_SCHEDULE.map(renderScheduleItem).join("")}
+        </div>
+      </article>
+    </section>
+
+    <section class="content-grid cols-2">
+      <article class="card chart-card">
+        <h3>Study Pulse</h3>
+        <div class="chart-shell">${renderDailyChart(data.recent14, state.settings.dailyTargetMinutes / 60)}</div>
+        <div class="chart-caption">Last 14 days. Green means target met, amber means close, red means a weak day, and dim bars mean no recorded study.</div>
+      </article>
+      <article class="card chart-card">
+        <h3>Quick Insight Snapshot</h3>
+        <div class="summary-grid summary-grid-2">
+          <div class="summary-card">
+            <span class="subdued">All-time logged</span>
+            <strong>${formatHours(data.allTimeMinutes / 60)}</strong>
+          </div>
+          <div class="summary-card">
+            <span class="subdued">Good days</span>
+            <strong>${data.goodDays}</strong>
+          </div>
+          <div class="summary-card">
+            <span class="subdued">Needs rescue</span>
+            <strong>${data.weakerDays}</strong>
+          </div>
+          <div class="summary-card">
+            <span class="subdued">Best weekday</span>
+            <strong>${data.bestWeekday?.label ?? "N/A"}</strong>
+          </div>
+        </div>
+        <div class="chart-shell chart-shell-tight">${renderWeekdayChart(data.weekdayAverages)}</div>
+      </article>
+    </section>
+  `;
+}
+
+function renderPomodoroView(data) {
+  const ratio = Math.min(completionRatio(data.today), 1);
+
+  return `
+    <section class="page-section focus-hero-grid">
+      <article class="card timer-showcase">
+        <div class="timer-headline-row">
+          <div class="phase-chip" id="timer-phase">${PHASE_META[state.timer.phase].title}</div>
+          <span class="session-state">${state.timer.isRunning ? "Session live" : "Ready to begin"}</span>
+        </div>
+        <div class="timer-clock timer-clock-large" id="timer-clock">${formatClock(state.timer.remainingSeconds)}</div>
+        <p class="subdued timer-voice" id="timer-note">${PHASE_META[state.timer.phase].description}</p>
+        <div class="timer-chip-row">
+          <span class="pill">${state.timer.completedFocusCycles} focus blocks done</span>
+          <span class="pill">${state.timer.isRunning ? "Running now" : "Paused"}</span>
+          <span class="pill">${formatHours(data.today.totalHours)} logged today</span>
+        </div>
+        <div class="button-row">
+          <button class="button button-primary" data-action="toggle-timer">${state.timer.isRunning ? "Pause" : "Start Focus"}</button>
+          <button class="button button-secondary" data-action="skip-phase">Skip Phase</button>
+          <button class="button button-danger" data-action="reset-timer">Reset Timer</button>
+        </div>
+      </article>
+
+      <article class="card panel cadence-card">
+        <h3>Focus Cadence</h3>
+        <div class="summary-grid summary-grid-2">
+          <div class="summary-card">
+            <span class="subdued">Daily target</span>
+            <strong>${formatHours(state.settings.dailyTargetMinutes / 60)}</strong>
+          </div>
+          <div class="summary-card">
+            <span class="subdued">Focus block</span>
+            <strong>${state.settings.focusMinutes} min</strong>
+          </div>
+          <div class="summary-card">
+            <span class="subdued">Short break</span>
+            <strong>${state.settings.shortBreakMinutes} min</strong>
+          </div>
+          <div class="summary-card">
+            <span class="subdued">Long break</span>
+            <strong>${state.settings.longBreakMinutes} min</strong>
+          </div>
+        </div>
+        <div class="focus-progress-wrap">
+          <div class="focus-progress-label">
+            <span class="subdued">Today’s target progress</span>
+            <strong>${Math.round(ratio * 100)}%</strong>
+          </div>
+          <div class="progress-track"><div class="progress-fill" style="width:${Math.round(ratio * 100)}%;"></div></div>
+        </div>
+        <p class="chart-caption">Your timer is separated here so you can stay locked in without the rest of the dashboard competing for attention.</p>
+      </article>
+    </section>
+
+    <section class="content-grid cols-2">
+      <article class="card chart-card">
+        <h3>Recent Focus Rhythm</h3>
+        <div class="chart-shell">${renderDailyChart(data.recent14, state.settings.dailyTargetMinutes / 60)}</div>
+        <div class="chart-caption">A quick read on whether your last two weeks are compounding or slipping.</div>
+      </article>
+      <article class="card panel">
+        <h3>Exam Week Map</h3>
+        <div class="schedule-list">
+          ${EXAM_SCHEDULE.map(renderScheduleItem).join("")}
+        </div>
+      </article>
+    </section>
+  `;
+}
+
+function renderSyllabusView(currentSubject, filteredSections) {
+  const subjectRatio = Math.round(subjectProgress(currentSubject) * 100);
+  const readyCount = currentSubject.sections.filter((section) => statusFor(section.id).id === "examReady").length;
+
+  return `
+    <section class="page-section">
+      <div class="content-grid cols-2">
+        <article class="card subject-hero-card">
+          <p class="eyebrow">Current subject</p>
+          <h3>${currentSubject.title}</h3>
+          <p class="subject-meta">${currentSubject.examWindow} • ${currentSubject.examDay} • ${currentSubject.weight}</p>
+          <p>${currentSubject.summary}</p>
+          <div class="subject-hero-stats">
+            <div class="summary-card">
+              <span class="subdued">Coverage</span>
+              <strong>${subjectRatio}%</strong>
+            </div>
+            <div class="summary-card">
+              <span class="subdued">Exam-ready</span>
+              <strong>${readyCount}/${currentSubject.sections.length}</strong>
+            </div>
+          </div>
+          <div class="button-row">
+            <button class="button button-secondary" data-open-pdf="true">Open PDF in New Tab</button>
+            <button class="button button-secondary" data-action="reset-syllabus">Reset All Statuses</button>
+          </div>
+        </article>
+
+        <article class="card legend-card">
+          <h3>Status Legend</h3>
+          <div class="legend-grid">
+            ${STATUS_META.map((status) => `
+              <div class="legend-item" style="background:${status.soft};">
+                <strong><span class="color-dot" style="background:${status.color};"></span>${status.shortTitle}</strong>
+                <span class="subdued">${status.title}</span>
+              </div>
+            `).join("")}
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="syllabus-layout">
+      <aside class="card subject-list">
+        <h3>Subjects</h3>
+        <p>Select a subject to inspect only its official main topics and progress.</p>
+        <div class="subject-buttons">
+          ${SUBJECTS.map((subject) => renderSubjectButton(subject)).join("")}
+        </div>
+      </aside>
+
+      <article class="card subject-pane">
+        <h2>${currentSubject.title}</h2>
+        <p class="subject-meta">${currentSubject.examWindow} • Bulletin pages ${currentSubject.bulletinPageRange[0]}-${currentSubject.bulletinPageRange[1]}</p>
+        <div class="field-row">
+          <input class="input" type="search" data-search placeholder="Filter main topics" value="${escapeAttribute(state.searchText)}">
+          <span class="pill">${filteredSections.length} visible topics</span>
+        </div>
+        <div class="section-list">
+          ${filteredSections.map((section) => renderSectionRow(section)).join("")}
+        </div>
+      </article>
+
+      <article class="card pdf-pane">
+        <h3>Bulletin PDF</h3>
+        <p>The embedded viewer opens directly to this subject’s page range. If the preview is blank, open it in a new tab.</p>
+        <iframe
+          class="pdf-frame"
+          title="2026 Bar Bulletin"
+          src="${pdfURLForSubject(currentSubject)}"
+        ></iframe>
+      </article>
+    </section>
+  `;
+}
+
+function renderInsightsView(data) {
+  return `
+    <section class="page-section insights-strip">
+      <article class="card summary-card spotlight-card">
+        <span class="subdued">All-time logged</span>
+        <strong>${formatHours(data.allTimeMinutes / 60)}</strong>
+        <p class="chart-caption">Every finished focus block contributes here.</p>
+      </article>
+      <article class="card summary-card spotlight-card">
+        <span class="subdued">Good days</span>
+        <strong>${data.goodDays}</strong>
+        <p class="chart-caption">Days where you reached at least 80% of target.</p>
+      </article>
+      <article class="card summary-card spotlight-card">
+        <span class="subdued">Needs rescue</span>
+        <strong>${data.weakerDays}</strong>
+        <p class="chart-caption">Days with some study, but not enough momentum.</p>
+      </article>
+      <article class="card summary-card spotlight-card">
+        <span class="subdued">Best streak</span>
+        <strong>${data.bestStreak} ${data.bestStreak === 1 ? "day" : "days"}</strong>
+        <p class="chart-caption">Your longest run of strong study days.</p>
+      </article>
+    </section>
+
+    <section class="content-grid cols-2">
+      <article class="card chart-card">
+        <h3>Last 30 Days</h3>
+        <div class="chart-shell">${renderDailyChart(data.recent30, state.settings.dailyTargetMinutes / 60)}</div>
+        <div class="chart-caption">Each bar is one day of recorded study from your Pomodoro sessions.</div>
+      </article>
+      <article class="card chart-card">
+        <h3>Weekday Rhythm</h3>
+        <div class="chart-shell">${renderWeekdayChart(data.weekdayAverages)}</div>
+        <div class="chart-caption">Strongest weekday: ${data.bestWeekday?.label ?? "N/A"}.</div>
+      </article>
+    </section>
+
+    <section class="content-grid cols-2">
+      <article class="card chart-card">
+        <h3>What the Graph Says</h3>
+        <div class="summary-grid summary-grid-2">
+          <div class="summary-card">
+            <span class="subdued">Today</span>
+            <strong>${formatHours(data.today.totalHours)}</strong>
+          </div>
+          <div class="summary-card">
+            <span class="subdued">Target completion</span>
+            <strong>${Math.round(Math.min(completionRatio(data.today), 1) * 100)}%</strong>
+          </div>
+          <div class="summary-card">
+            <span class="subdued">Exam-ready sections</span>
+            <strong>${data.examReadySections}/${TOTAL_SECTIONS}</strong>
+          </div>
+          <div class="summary-card">
+            <span class="subdued">Coverage score</span>
+            <strong>${Math.round(data.syllabusRatio * 100)}%</strong>
+          </div>
+        </div>
+        <p class="chart-caption">
+          Best day: ${data.bestDay ? `${formatShortDate(data.bestDay.dayStart)} at ${formatHours(data.bestDay.totalHours)}` : "No sessions yet"}.
+        </p>
+      </article>
+      <article class="card panel">
+        <h3>Reading the Pattern</h3>
+        <div class="insight-list">
+          <div class="insight-row">
+            <span class="subdued">Best weekday</span>
+            <strong>${data.bestWeekday?.label ?? "N/A"}</strong>
+          </div>
+          <div class="insight-row">
+            <span class="subdued">Good days</span>
+            <strong>${data.goodDays}</strong>
+          </div>
+          <div class="insight-row">
+            <span class="subdued">Weaker days</span>
+            <strong>${data.weakerDays}</strong>
+          </div>
+          <div class="insight-row">
+            <span class="subdued">Current target</span>
+            <strong>${formatHours(state.settings.dailyTargetMinutes / 60)}</strong>
+          </div>
+        </div>
+      </article>
+    </section>
+  `;
+}
+
+function renderSettingsView() {
+  return `
+    <section class="page-section">
+      <div class="content-grid cols-2">
+        <article class="card settings-card">
+          <h3>Study Goals</h3>
+          <div class="setting-group">
+            <label for="dailyTargetMinutes">Daily target minutes</label>
+            <input class="input" id="dailyTargetMinutes" type="number" min="30" step="30" data-setting="dailyTargetMinutes" value="${state.settings.dailyTargetMinutes}">
+          </div>
+        </article>
+        <article class="card settings-card">
+          <h3>Storage Note</h3>
+          <p class="setting-help">This Mac app keeps your timer, syllabus statuses, and study history on this device so it feels personal and private.</p>
+          <div class="summary-grid summary-grid-2">
+            <div class="summary-card">
+              <span class="subdued">Focus</span>
+              <strong>${state.settings.focusMinutes} min</strong>
+            </div>
+            <div class="summary-card">
+              <span class="subdued">Target</span>
+              <strong>${formatHours(state.settings.dailyTargetMinutes / 60)}</strong>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="settings-grid settings-grid-wide">
+      <article class="card settings-card">
+        <h3>Pomodoro Lengths</h3>
+        <div class="setting-group">
+          <label for="focusMinutes">Focus minutes</label>
+          <input class="input" id="focusMinutes" type="number" min="5" step="5" data-setting="focusMinutes" value="${state.settings.focusMinutes}">
+        </div>
+        <div class="setting-group">
+          <label for="shortBreakMinutes">Short break minutes</label>
+          <input class="input" id="shortBreakMinutes" type="number" min="1" step="1" data-setting="shortBreakMinutes" value="${state.settings.shortBreakMinutes}">
+        </div>
+        <div class="setting-group">
+          <label for="longBreakMinutes">Long break minutes</label>
+          <input class="input" id="longBreakMinutes" type="number" min="5" step="5" data-setting="longBreakMinutes" value="${state.settings.longBreakMinutes}">
+        </div>
+        <div class="setting-group">
+          <label for="sessionsBeforeLongBreak">Focus sessions before long break</label>
+          <input class="input" id="sessionsBeforeLongBreak" type="number" min="2" step="1" data-setting="sessionsBeforeLongBreak" value="${state.settings.sessionsBeforeLongBreak}">
+        </div>
+      </article>
+
+      <article class="card settings-card">
+        <h3>Sound Cues</h3>
+        <div class="setting-group">
+          <label class="toggle-row" for="soundEnabled">
+            <span>Play Pomodoro milestone sounds</span>
+            <input id="soundEnabled" type="checkbox" data-setting-boolean="soundEnabled" ${state.settings.soundEnabled ? "checked" : ""}>
+          </label>
+        </div>
+        <p class="setting-help">Focus start: productive lift-off cue. Focus complete: warm chime. Break complete: light bell. Daily target reached: brighter success cue.</p>
+        <div class="button-row" style="margin-top: 14px;">
+          <button class="button button-secondary" data-action="preview-sound">Preview Sound</button>
+        </div>
+      </article>
+    </section>
+
+    <p class="footer-note">Bar Exam 2026 Command Center web edition. Data is stored in this browser using local storage.</p>
+  `;
 }
 
 function renderCountdownCard() {
@@ -983,13 +1291,13 @@ function countdownText() {
 
 function updateCountdownUI() {
   const countdown = countdownText();
-  for (const id of ["countdown-days", "countdown-days-card"]) {
+  for (const id of ["countdown-days-card", "countdown-days-side"]) {
     const node = document.getElementById(id);
     if (node) {
       node.textContent = countdown.daysLabel;
     }
   }
-  for (const id of ["countdown-detail", "countdown-detail-card"]) {
+  for (const id of ["countdown-detail-card", "countdown-detail-side"]) {
     const node = document.getElementById(id);
     if (node) {
       node.textContent = countdown.detailLabel;
