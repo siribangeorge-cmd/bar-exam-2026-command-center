@@ -822,6 +822,33 @@ select {
   font-size: 0.94rem;
 }
 
+.sound-preview-list {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.sound-preview-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.sound-preview-row strong {
+  display: block;
+}
+
+.sound-preview-row .setting-help {
+  margin: 4px 0 0;
+}
+
+.settings-actions {
+  margin-top: 16px;
+}
+
 .toggle-row input[type="checkbox"] {
   width: 22px;
   height: 22px;
@@ -945,5 +972,10 @@ select {
 
   .timer-clock-large {
     font-size: 3.6rem;
+  }
+
+  .sound-preview-row {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }

@@ -443,6 +443,14 @@ function handleClick(event) {
     saveSyllabusStatuses();
   } else if (action === "preview-sound") {
     soundEngine.preview();
+  } else if (action === "preview-focus-start") {
+    soundEngine.playFocusStart();
+  } else if (action === "preview-break-start") {
+    soundEngine.playBreakStart();
+  } else if (action === "preview-focus-complete") {
+    soundEngine.playFocusComplete(false);
+  } else if (action === "preview-target-hit") {
+    soundEngine.playTargetHit();
   }
 
   renderApp();
@@ -1012,15 +1020,34 @@ function renderSettingsView() {
     <section class="page-section">
       <div class="content-grid cols-2">
         <article class="card settings-card">
-          <h3>Study Goals</h3>
-          <div class="setting-group">
-            <label for="dailyTargetMinutes">Daily target minutes</label>
-            <input class="input" id="dailyTargetMinutes" type="number" min="30" step="30" data-setting="dailyTargetMinutes" value="${state.settings.dailyTargetMinutes}">
+          <h3>Pomodoro Setup</h3>
+          <p class="setting-help">Adjust your study target and timer lengths here. Changes save instantly in this browser.</p>
+          <div class="settings-grid settings-grid-wide">
+            <div class="setting-group">
+              <label for="dailyTargetMinutes">Daily target minutes</label>
+              <input class="input" id="dailyTargetMinutes" type="number" min="30" step="30" data-setting="dailyTargetMinutes" value="${state.settings.dailyTargetMinutes}">
+            </div>
+            <div class="setting-group">
+              <label for="focusMinutes">Focus minutes</label>
+              <input class="input" id="focusMinutes" type="number" min="5" step="5" data-setting="focusMinutes" value="${state.settings.focusMinutes}">
+            </div>
+            <div class="setting-group">
+              <label for="shortBreakMinutes">Short break minutes</label>
+              <input class="input" id="shortBreakMinutes" type="number" min="1" step="1" data-setting="shortBreakMinutes" value="${state.settings.shortBreakMinutes}">
+            </div>
+            <div class="setting-group">
+              <label for="longBreakMinutes">Long break minutes</label>
+              <input class="input" id="longBreakMinutes" type="number" min="5" step="5" data-setting="longBreakMinutes" value="${state.settings.longBreakMinutes}">
+            </div>
+            <div class="setting-group">
+              <label for="sessionsBeforeLongBreak">Focus sessions before long break</label>
+              <input class="input" id="sessionsBeforeLongBreak" type="number" min="2" step="1" data-setting="sessionsBeforeLongBreak" value="${state.settings.sessionsBeforeLongBreak}">
+            </div>
           </div>
         </article>
         <article class="card settings-card">
-          <h3>Storage Note</h3>
-          <p class="setting-help">This Mac app keeps your timer, syllabus statuses, and study history on this device so it feels personal and private.</p>
+          <h3>Current Setup</h3>
+          <p class="setting-help">If a timer is already running, your new durations will fully apply on the next fresh phase.</p>
           <div class="summary-grid summary-grid-2">
             <div class="summary-card">
               <span class="subdued">Focus</span>
@@ -1030,29 +1057,40 @@ function renderSettingsView() {
               <span class="subdued">Target</span>
               <strong>${formatHours(state.settings.dailyTargetMinutes / 60)}</strong>
             </div>
+            <div class="summary-card">
+              <span class="subdued">Short break</span>
+              <strong>${state.settings.shortBreakMinutes} min</strong>
+            </div>
+            <div class="summary-card">
+              <span class="subdued">Long break</span>
+              <strong>${state.settings.longBreakMinutes} min</strong>
+            </div>
           </div>
+          <p class="setting-help">Your timer, syllabus statuses, and study history stay saved locally on the device and browser you are using.</p>
         </article>
       </div>
     </section>
 
     <section class="settings-grid settings-grid-wide">
       <article class="card settings-card">
-        <h3>Pomodoro Lengths</h3>
-        <div class="setting-group">
-          <label for="focusMinutes">Focus minutes</label>
-          <input class="input" id="focusMinutes" type="number" min="5" step="5" data-setting="focusMinutes" value="${state.settings.focusMinutes}">
-        </div>
-        <div class="setting-group">
-          <label for="shortBreakMinutes">Short break minutes</label>
-          <input class="input" id="shortBreakMinutes" type="number" min="1" step="1" data-setting="shortBreakMinutes" value="${state.settings.shortBreakMinutes}">
-        </div>
-        <div class="setting-group">
-          <label for="longBreakMinutes">Long break minutes</label>
-          <input class="input" id="longBreakMinutes" type="number" min="5" step="5" data-setting="longBreakMinutes" value="${state.settings.longBreakMinutes}">
-        </div>
-        <div class="setting-group">
-          <label for="sessionsBeforeLongBreak">Focus sessions before long break</label>
-          <input class="input" id="sessionsBeforeLongBreak" type="number" min="2" step="1" data-setting="sessionsBeforeLongBreak" value="${state.settings.sessionsBeforeLongBreak}">
+        <h3>Quick Reading</h3>
+        <div class="insight-list">
+          <div class="insight-row">
+            <span class="subdued">Daily target</span>
+            <strong>${formatHours(state.settings.dailyTargetMinutes / 60)}</strong>
+          </div>
+          <div class="insight-row">
+            <span class="subdued">Focus cycle</span>
+            <strong>${state.settings.focusMinutes}/${state.settings.shortBreakMinutes}/${state.settings.longBreakMinutes} min</strong>
+          </div>
+          <div class="insight-row">
+            <span class="subdued">Long break cadence</span>
+            <strong>Every ${state.settings.sessionsBeforeLongBreak} focus blocks</strong>
+          </div>
+          <div class="insight-row">
+            <span class="subdued">Sound cues</span>
+            <strong>${state.settings.soundEnabled ? "On" : "Off"}</strong>
+          </div>
         </div>
       </article>
 
@@ -1064,9 +1102,39 @@ function renderSettingsView() {
             <input id="soundEnabled" type="checkbox" data-setting-boolean="soundEnabled" ${state.settings.soundEnabled ? "checked" : ""}>
           </label>
         </div>
-        <p class="setting-help">Focus start: productive lift-off cue. Focus complete: warm chime. Break complete: light bell. Daily target reached: brighter success cue.</p>
-        <div class="button-row" style="margin-top: 14px;">
-          <button class="button button-secondary" data-action="preview-sound">Preview Sound</button>
+        <p class="setting-help">You can keep them on for live Pomodoro feedback, or switch them off if you want a silent study setup.</p>
+        <div class="sound-preview-list">
+          <div class="sound-preview-row">
+            <div>
+              <strong>Focus start</strong>
+              <p class="setting-help">Plays when a focus block begins.</p>
+            </div>
+            <button class="button button-secondary" data-action="preview-focus-start">Preview</button>
+          </div>
+          <div class="sound-preview-row">
+            <div>
+              <strong>Break start</strong>
+              <p class="setting-help">Plays when a break begins.</p>
+            </div>
+            <button class="button button-secondary" data-action="preview-break-start">Preview</button>
+          </div>
+          <div class="sound-preview-row">
+            <div>
+              <strong>Focus complete</strong>
+              <p class="setting-help">Warm chime when a focus block ends.</p>
+            </div>
+            <button class="button button-secondary" data-action="preview-focus-complete">Preview</button>
+          </div>
+          <div class="sound-preview-row">
+            <div>
+              <strong>Daily target hit</strong>
+              <p class="setting-help">Success cue when you cross your target for the day.</p>
+            </div>
+            <button class="button button-secondary" data-action="preview-target-hit">Preview</button>
+          </div>
+        </div>
+        <div class="button-row settings-actions">
+          <button class="button button-secondary" data-action="preview-sound">Quick Preview</button>
         </div>
       </article>
     </section>
