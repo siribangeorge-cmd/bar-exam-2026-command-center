@@ -735,8 +735,7 @@ function renderActiveView(data, currentSubject, filteredSections) {
 
 function renderDashboardView(data) {
   return `
-    <section class="content-grid cols-3 dashboard-stats-grid">
-      ${renderCountdownCard()}
+    <section class="content-grid cols-2 dashboard-stats-grid">
       ${renderTargetCard(data)}
       ${renderSyllabusCoverageCard(data)}
     </section>
@@ -1082,18 +1081,6 @@ function renderSettingsView() {
   `;
 }
 
-function renderCountdownCard() {
-  const countdown = countdownText();
-  return `
-    <article class="card stat-card">
-      <h3>Countdown</h3>
-      <div class="big-number" id="countdown-days-card">${countdown.daysLabel}</div>
-      <p class="subdued" id="countdown-detail-card">${countdown.detailLabel}</p>
-      <p class="subdued">First exam block starts at 8:00 AM, Manila time.</p>
-    </article>
-  `;
-}
-
 function renderTargetCard(data) {
   const ratio = Math.min(completionRatio(data.today), 1);
   return `
@@ -1289,13 +1276,13 @@ function countdownText() {
 
 function updateCountdownUI() {
   const countdown = countdownText();
-  for (const id of ["countdown-days-card", "countdown-days-side", "countdown-days-top"]) {
+  for (const id of ["countdown-days-side", "countdown-days-top"]) {
     const node = document.getElementById(id);
     if (node) {
       node.textContent = countdown.daysLabel;
     }
   }
-  for (const id of ["countdown-detail-card", "countdown-detail-side", "countdown-detail-top"]) {
+  for (const id of ["countdown-detail-side", "countdown-detail-top"]) {
     const node = document.getElementById(id);
     if (node) {
       node.textContent = countdown.detailLabel;
