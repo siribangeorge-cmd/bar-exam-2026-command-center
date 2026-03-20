@@ -161,6 +161,25 @@ select {
   display: grid;
   gap: 10px;
   align-content: start;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 6px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 212, 134, 0.28) transparent;
+}
+
+.nav-menu::-webkit-scrollbar {
+  width: 8px;
+}
+
+.nav-menu::-webkit-scrollbar-thumb {
+  background: rgba(255, 212, 134, 0.24);
+  border-radius: 999px;
+}
+
+.nav-footer-stack {
+  display: grid;
+  gap: 18px;
 }
 
 .nav-button {
@@ -593,6 +612,10 @@ select {
   display: grid;
   gap: 8px;
   margin-top: 18px;
+}
+
+.settings-shortcut-row {
+  margin-top: 16px;
 }
 
 .button {

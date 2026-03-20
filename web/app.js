@@ -568,23 +568,26 @@ function renderApp() {
           </div>
         </div>
         <nav class="nav-menu">
-          ${NAV_ITEMS.map((item) => renderNavButton(item, data)).join("")}
+          ${NAV_ITEMS.filter((item) => item.id !== "settings").map((item) => renderNavButton(item, data)).join("")}
         </nav>
-        <article class="nav-summary">
-          <span class="metric-label">Until first exam</span>
-          <strong class="nav-summary-value" id="countdown-days-side">${countdown.daysLabel}</strong>
-          <p class="nav-summary-copy" id="countdown-detail-side">${countdown.detailLabel}</p>
-          <div class="nav-summary-grid">
-            <div class="nav-summary-tile">
-              <span class="subdued">Today</span>
-              <strong>${formatHours(data.today.totalHours)}</strong>
+        <div class="nav-footer-stack">
+          ${renderNavButton(NAV_ITEMS.find((item) => item.id === "settings"), data)}
+          <article class="nav-summary">
+            <span class="metric-label">Until first exam</span>
+            <strong class="nav-summary-value" id="countdown-days-side">${countdown.daysLabel}</strong>
+            <p class="nav-summary-copy" id="countdown-detail-side">${countdown.detailLabel}</p>
+            <div class="nav-summary-grid">
+              <div class="nav-summary-tile">
+                <span class="subdued">Today</span>
+                <strong>${formatHours(data.today.totalHours)}</strong>
+              </div>
+              <div class="nav-summary-tile">
+                <span class="subdued">Coverage</span>
+                <strong>${Math.round(data.syllabusRatio * 100)}%</strong>
+              </div>
             </div>
-            <div class="nav-summary-tile">
-              <span class="subdued">Coverage</span>
-              <strong>${Math.round(data.syllabusRatio * 100)}%</strong>
-            </div>
-          </div>
-        </article>
+          </article>
+        </div>
       </aside>
 
       <section class="workspace-shell">
@@ -838,6 +841,9 @@ function renderPomodoroView(data) {
           <div class="progress-track"><div class="progress-fill" style="width:${Math.round(ratio * 100)}%;"></div></div>
         </div>
         <p class="chart-caption">Your timer is separated here so you can stay locked in without the rest of the dashboard competing for attention.</p>
+        <div class="button-row settings-shortcut-row">
+          <button class="button button-secondary" data-view="settings">Open Settings</button>
+        </div>
       </article>
     </section>
 
