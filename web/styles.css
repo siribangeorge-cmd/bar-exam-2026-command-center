@@ -787,6 +787,10 @@ select {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.subject-legend-grid {
+  margin-top: 20px;
+}
+
 .legend-item {
   padding: 14px;
 }

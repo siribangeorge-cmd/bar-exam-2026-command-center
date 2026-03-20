@@ -854,6 +854,75 @@ function renderPomodoroView(data) {
         <div class="chart-caption">A quick read on whether your last two weeks are compounding or slipping.</div>
       </article>
     </section>
+
+    <section class="content-grid cols-2">
+      <article class="card settings-card">
+        <h3>Adjust Pomodoro</h3>
+        <p class="setting-help">Tune the timer here without leaving the Pomodoro page.</p>
+        <div class="settings-grid settings-grid-wide">
+          <div class="setting-group">
+            <label for="pomodoroDailyTargetMinutes">Daily target minutes</label>
+            <input class="input" id="pomodoroDailyTargetMinutes" type="number" min="30" step="30" data-setting="dailyTargetMinutes" value="${state.settings.dailyTargetMinutes}">
+          </div>
+          <div class="setting-group">
+            <label for="pomodoroFocusMinutes">Focus minutes</label>
+            <input class="input" id="pomodoroFocusMinutes" type="number" min="5" step="5" data-setting="focusMinutes" value="${state.settings.focusMinutes}">
+          </div>
+          <div class="setting-group">
+            <label for="pomodoroShortBreakMinutes">Short break minutes</label>
+            <input class="input" id="pomodoroShortBreakMinutes" type="number" min="1" step="1" data-setting="shortBreakMinutes" value="${state.settings.shortBreakMinutes}">
+          </div>
+          <div class="setting-group">
+            <label for="pomodoroLongBreakMinutes">Long break minutes</label>
+            <input class="input" id="pomodoroLongBreakMinutes" type="number" min="5" step="5" data-setting="longBreakMinutes" value="${state.settings.longBreakMinutes}">
+          </div>
+          <div class="setting-group">
+            <label for="pomodoroSessionsBeforeLongBreak">Focus sessions before long break</label>
+            <input class="input" id="pomodoroSessionsBeforeLongBreak" type="number" min="2" step="1" data-setting="sessionsBeforeLongBreak" value="${state.settings.sessionsBeforeLongBreak}">
+          </div>
+        </div>
+      </article>
+
+      <article class="card settings-card">
+        <h3>Sound Cues</h3>
+        <div class="setting-group">
+          <label class="toggle-row" for="pomodoroSoundEnabled">
+            <span>Play Pomodoro milestone sounds</span>
+            <input id="pomodoroSoundEnabled" type="checkbox" data-setting-boolean="soundEnabled" ${state.settings.soundEnabled ? "checked" : ""}>
+          </label>
+        </div>
+        <div class="sound-preview-list">
+          <div class="sound-preview-row">
+            <div>
+              <strong>Focus start</strong>
+              <p class="setting-help">Plays when a focus block begins.</p>
+            </div>
+            <button class="button button-secondary" data-action="preview-focus-start">Preview</button>
+          </div>
+          <div class="sound-preview-row">
+            <div>
+              <strong>Break start</strong>
+              <p class="setting-help">Plays when a break begins.</p>
+            </div>
+            <button class="button button-secondary" data-action="preview-break-start">Preview</button>
+          </div>
+          <div class="sound-preview-row">
+            <div>
+              <strong>Focus complete</strong>
+              <p class="setting-help">Warm chime when a focus block ends.</p>
+            </div>
+            <button class="button button-secondary" data-action="preview-focus-complete">Preview</button>
+          </div>
+          <div class="sound-preview-row">
+            <div>
+              <strong>Daily target hit</strong>
+              <p class="setting-help">Success cue when you hit your target.</p>
+            </div>
+            <button class="button button-secondary" data-action="preview-target-hit">Preview</button>
+          </div>
+        </div>
+      </article>
+    </section>
   `;
 }
 
@@ -885,15 +954,10 @@ function renderSyllabusView(currentSubject, filteredSections) {
           </div>
         </article>
 
-        <article class="card legend-card">
-          <h3>Status Legend</h3>
-          <div class="legend-grid">
-            ${STATUS_META.map((status) => `
-              <div class="legend-item" style="background:${status.soft};">
-                <strong><span class="color-dot" style="background:${status.color};"></span>${status.shortTitle}</strong>
-                <span class="subdued">${status.title}</span>
-              </div>
-            `).join("")}
+        <article class="card panel">
+          <h3>Exam Week Map</h3>
+          <div class="schedule-list">
+            ${EXAM_SCHEDULE.map(renderScheduleItem).join("")}
           </div>
         </article>
       </div>
@@ -911,6 +975,14 @@ function renderSyllabusView(currentSubject, filteredSections) {
       <article class="card subject-pane">
         <h2>${currentSubject.title}</h2>
         <p class="subject-meta">${currentSubject.examWindow} • Bulletin pages ${currentSubject.bulletinPageRange[0]}-${currentSubject.bulletinPageRange[1]}</p>
+        <div class="legend-grid subject-legend-grid">
+          ${STATUS_META.map((status) => `
+            <div class="legend-item" style="background:${status.soft};">
+              <strong><span class="color-dot" style="background:${status.color};"></span>${status.shortTitle}</strong>
+              <span class="subdued">${status.title}</span>
+            </div>
+          `).join("")}
+        </div>
         <div class="field-row">
           <input class="input" type="search" data-search placeholder="Filter main topics" value="${escapeAttribute(state.searchText)}">
           <span class="pill">${filteredSections.length} visible topics</span>
