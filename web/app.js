@@ -50,11 +50,6 @@ const NAV_ITEMS = [
     label: "Insights",
     shortLabel: "Study graphs and rhythm analysis",
   },
-  {
-    id: "settings",
-    label: "Settings",
-    shortLabel: "Targets, sound, and timing setup",
-  },
 ];
 
 const statusMap = new Map(STATUS_META.map((status) => [status.id, status]));
@@ -138,6 +133,9 @@ function saveTimer() {
 
 function loadActiveView() {
   const raw = localStorage.getItem(STORAGE_KEYS.activeView);
+  if (raw === "settings") {
+    return "pomodoro";
+  }
   return NAV_ITEMS.some((item) => item.id === raw) ? raw : "dashboard";
 }
 
@@ -628,14 +626,6 @@ function viewMeta() {
     };
   }
 
-  if (state.activeView === "settings") {
-    return {
-      kicker: "System Controls",
-      title: "App Preferences",
-      description: "Tune your targets, Pomodoro lengths, and audio cues so the dashboard fits the way you actually study.",
-    };
-  }
-
   return {
     kicker: "Dashboard",
     title: "Bar Exam 2026",
@@ -707,8 +697,6 @@ function renderNavButton(item, data) {
     meta = `${data.examReadySections}/${TOTAL_SECTIONS} exam-ready`;
   } else if (item.id === "insights") {
     meta = `${data.goodDays} strong days`;
-  } else if (item.id === "settings") {
-    meta = `${state.settings.focusMinutes}/${state.settings.shortBreakMinutes}/${state.settings.longBreakMinutes} min`;
   }
 
   return `
@@ -734,10 +722,6 @@ function renderActiveView(data, currentSubject, filteredSections) {
 
   if (state.activeView === "insights") {
     return renderInsightsView(data);
-  }
-
-  if (state.activeView === "settings") {
-    return renderSettingsView();
   }
 
   return renderDashboardView(data);
@@ -840,9 +824,6 @@ function renderPomodoroView(data) {
           <div class="progress-track"><div class="progress-fill" style="width:${Math.round(ratio * 100)}%;"></div></div>
         </div>
         <p class="chart-caption">Your timer is separated here so you can stay locked in without the rest of the dashboard competing for attention.</p>
-        <div class="button-row settings-shortcut-row">
-          <button class="button button-secondary" data-view="settings">Open Settings</button>
-        </div>
       </article>
     </section>
 
