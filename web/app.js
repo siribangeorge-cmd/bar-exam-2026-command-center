@@ -833,17 +833,11 @@ function renderPomodoroView(data) {
       </article>
     </section>
 
-    <section class="content-grid cols-2">
+    <section class="content-grid">
       <article class="card chart-card">
         <h3>Recent Focus Rhythm</h3>
         <div class="chart-shell">${renderDailyChart(data.recent14, state.settings.dailyTargetMinutes / 60)}</div>
         <div class="chart-caption">A quick read on whether your last two weeks are compounding or slipping.</div>
-      </article>
-      <article class="card panel">
-        <h3>Exam Week Map</h3>
-        <div class="schedule-list">
-          ${EXAM_SCHEDULE.map(renderScheduleItem).join("")}
-        </div>
       </article>
     </section>
   `;
