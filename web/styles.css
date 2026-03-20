@@ -340,6 +340,28 @@ select {
   line-height: 1.65;
 }
 
+.dashboard-topbar {
+  align-items: center;
+}
+
+.dashboard-topbar-main {
+  min-width: 0;
+}
+
+.dashboard-countdown {
+  margin: 0;
+  font-family: "Fraunces", "Georgia", serif;
+  font-size: clamp(3.4rem, 7vw, 5.8rem);
+  line-height: 0.95;
+  color: var(--gold-strong);
+  font-variant-numeric: tabular-nums;
+}
+
+.dashboard-countdown-copy {
+  margin-top: 10px;
+  max-width: 72ch;
+}
+
 .workspace-pulse {
   display: grid;
   grid-template-columns: repeat(3, minmax(120px, 1fr));
@@ -498,6 +520,10 @@ select {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.cols-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 .progress-track {
   width: 100%;
   height: 12px;
@@ -640,6 +666,10 @@ select {
 .chart-caption {
   margin-top: 12px;
   line-height: 1.6;
+}
+
+.dashboard-stats-grid .stat-card {
+  min-height: 100%;
 }
 
 .summary-grid {
@@ -822,6 +852,7 @@ select {
   .dashboard-hero-grid,
   .focus-hero-grid,
   .cols-2,
+  .cols-3,
   .syllabus-layout,
   .insights-strip,
   .summary-grid,

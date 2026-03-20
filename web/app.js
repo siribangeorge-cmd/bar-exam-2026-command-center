@@ -580,27 +580,7 @@ function renderApp() {
       </aside>
 
       <section class="workspace-shell">
-        <header class="card workspace-topbar">
-          <div class="workspace-title-block">
-            <p class="workspace-kicker">${meta.kicker}</p>
-            <h2>${meta.title}</h2>
-            <p class="workspace-copy">${meta.description}</p>
-          </div>
-          <div class="workspace-pulse">
-            <div class="pulse-pill">
-              <span class="subdued">Target</span>
-              <strong>${formatHours(state.settings.dailyTargetMinutes / 60)}</strong>
-            </div>
-            <div class="pulse-pill">
-              <span class="subdued">Focus</span>
-              <strong>${state.settings.focusMinutes} min</strong>
-            </div>
-            <div class="pulse-pill">
-              <span class="subdued">Ready</span>
-              <strong>${data.examReadySections}/${TOTAL_SECTIONS}</strong>
-            </div>
-          </div>
-        </header>
+        ${renderWorkspaceHeader(data, countdown, meta)}
 
         <main class="page-shell">
           ${renderActiveView(data, currentSubject, filteredSections)}
@@ -647,10 +627,62 @@ function viewMeta() {
   }
 
   return {
-    kicker: "Command Deck",
-    title: "Premium Overview",
-    description: "A cleaner, more organized command center for the final stretch to the bar, with every major workflow split into its own room.",
+    kicker: "Dashboard",
+    title: "Bar Exam 2026",
+    description: "Countdown, progress, and exam-day readiness in one place.",
   };
+}
+
+function renderWorkspaceHeader(data, countdown, meta) {
+  if (state.activeView === "dashboard") {
+    return `
+      <header class="card workspace-topbar dashboard-topbar">
+        <div class="dashboard-topbar-main">
+          <p class="workspace-kicker">Countdown</p>
+          <h2 class="dashboard-countdown" id="countdown-days-top">${countdown.daysLabel}</h2>
+          <p class="workspace-copy dashboard-countdown-copy" id="countdown-detail-top">${countdown.detailLabel}</p>
+        </div>
+        <div class="workspace-pulse">
+          <div class="pulse-pill">
+            <span class="subdued">Target</span>
+            <strong>${formatHours(state.settings.dailyTargetMinutes / 60)}</strong>
+          </div>
+          <div class="pulse-pill">
+            <span class="subdued">Focus</span>
+            <strong>${state.settings.focusMinutes} min</strong>
+          </div>
+          <div class="pulse-pill">
+            <span class="subdued">Ready</span>
+            <strong>${data.examReadySections}/${TOTAL_SECTIONS}</strong>
+          </div>
+        </div>
+      </header>
+    `;
+  }
+
+  return `
+    <header class="card workspace-topbar">
+      <div class="workspace-title-block">
+        <p class="workspace-kicker">${meta.kicker}</p>
+        <h2>${meta.title}</h2>
+        <p class="workspace-copy">${meta.description}</p>
+      </div>
+      <div class="workspace-pulse">
+        <div class="pulse-pill">
+          <span class="subdued">Target</span>
+          <strong>${formatHours(state.settings.dailyTargetMinutes / 60)}</strong>
+        </div>
+        <div class="pulse-pill">
+          <span class="subdued">Focus</span>
+          <strong>${state.settings.focusMinutes} min</strong>
+        </div>
+        <div class="pulse-pill">
+          <span class="subdued">Ready</span>
+          <strong>${data.examReadySections}/${TOTAL_SECTIONS}</strong>
+        </div>
+      </div>
+    </header>
+  `;
 }
 
 function renderNavButton(item, data) {
@@ -703,53 +735,19 @@ function renderActiveView(data, currentSubject, filteredSections) {
 
 function renderDashboardView(data) {
   return `
-    <section class="page-section dashboard-hero-grid">
-      <article class="card marquee-card">
-        <p class="eyebrow">Expensive feel, faster workflow</p>
-        <h3 class="marquee-title">Your bar prep dashboard now works like a proper Mac app, not a long scrolling page.</h3>
-        <p class="marquee-copy">
-          The main rooms are now separated so you can jump straight into your timer, syllabus, or insights without losing time.
-          Everything important still stays visible, but in a cleaner premium layout.
-        </p>
-        <div class="marquee-strip">
-          <span class="pill">Dedicated pages</span>
-          <span class="pill">Fixed navigation</span>
-          <span class="pill">Cleaner gradients</span>
-          <span class="pill">Smoother transitions</span>
-        </div>
-        <div class="marquee-metrics">
-          <div class="marquee-metric">
-            <span class="subdued">Today</span>
-            <strong>${formatHours(data.today.totalHours)}</strong>
-          </div>
-          <div class="marquee-metric">
-            <span class="subdued">Coverage</span>
-            <strong>${Math.round(data.syllabusRatio * 100)}%</strong>
-          </div>
-          <div class="marquee-metric">
-            <span class="subdued">Best streak</span>
-            <strong>${data.bestStreak} ${data.bestStreak === 1 ? "day" : "days"}</strong>
-          </div>
-        </div>
-      </article>
-
-      <div class="dashboard-side-stack">
-        ${renderCountdownCard()}
-        ${renderTargetCard(data)}
-      </div>
+    <section class="content-grid cols-3 dashboard-stats-grid">
+      ${renderCountdownCard()}
+      ${renderTargetCard(data)}
+      ${renderSyllabusCoverageCard(data)}
     </section>
 
     <section class="content-grid cols-2">
-      ${renderSyllabusCoverageCard(data)}
       <article class="card panel">
         <h3>Exam Week Map</h3>
         <div class="schedule-list">
           ${EXAM_SCHEDULE.map(renderScheduleItem).join("")}
         </div>
       </article>
-    </section>
-
-    <section class="content-grid cols-2">
       <article class="card chart-card">
         <h3>Study Pulse</h3>
         <div class="chart-shell">${renderDailyChart(data.recent14, state.settings.dailyTargetMinutes / 60)}</div>
@@ -1291,13 +1289,13 @@ function countdownText() {
 
 function updateCountdownUI() {
   const countdown = countdownText();
-  for (const id of ["countdown-days-card", "countdown-days-side"]) {
+  for (const id of ["countdown-days-card", "countdown-days-side", "countdown-days-top"]) {
     const node = document.getElementById(id);
     if (node) {
       node.textContent = countdown.daysLabel;
     }
   }
-  for (const id of ["countdown-detail-card", "countdown-detail-side"]) {
+  for (const id of ["countdown-detail-card", "countdown-detail-side", "countdown-detail-top"]) {
     const node = document.getElementById(id);
     if (node) {
       node.textContent = countdown.detailLabel;
