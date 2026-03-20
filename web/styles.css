@@ -93,11 +93,12 @@ select {
 .nav-shell {
   position: sticky;
   top: 20px;
-  height: calc(100vh - 40px);
+  max-height: calc(100vh - 40px);
   padding: 22px;
   display: grid;
   grid-template-rows: auto auto 1fr;
   gap: 16px;
+  align-content: start;
 }
 
 .nav-aura {
@@ -166,7 +167,7 @@ select {
 .nav-footer-stack {
   display: grid;
   gap: 14px;
-  align-content: end;
+  margin-top: auto;
 }
 
 .nav-button {
