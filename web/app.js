@@ -854,7 +854,7 @@ function renderPomodoroView(data) {
         <h3>Sound Cues</h3>
         <div class="setting-group">
           <label class="toggle-row" for="pomodoroSoundEnabled">
-            <span>Play Pomodoro milestone sounds</span>
+            <span>Play Pomodoro battle cues</span>
             <input id="pomodoroSoundEnabled" type="checkbox" data-setting-boolean="soundEnabled" ${state.settings.soundEnabled ? "checked" : ""}>
           </label>
         </div>
@@ -862,28 +862,28 @@ function renderPomodoroView(data) {
           <div class="sound-preview-row">
             <div>
               <strong>Focus start</strong>
-              <p class="setting-help">Plays when a focus block begins.</p>
+              <p class="setting-help">War horn and drum hit when a focus block begins.</p>
             </div>
             <button class="button button-secondary" data-action="preview-focus-start">Preview</button>
           </div>
           <div class="sound-preview-row">
             <div>
               <strong>Break start</strong>
-              <p class="setting-help">Plays when a break begins.</p>
+              <p class="setting-help">Short rally cue when a break begins.</p>
             </div>
             <button class="button button-secondary" data-action="preview-break-start">Preview</button>
           </div>
           <div class="sound-preview-row">
             <div>
               <strong>Focus complete</strong>
-              <p class="setting-help">Warm chime when a focus block ends.</p>
+              <p class="setting-help">Victory horn when a focus block ends.</p>
             </div>
             <button class="button button-secondary" data-action="preview-focus-complete">Preview</button>
           </div>
           <div class="sound-preview-row">
             <div>
               <strong>Daily target hit</strong>
-              <p class="setting-help">Success cue when you hit your target.</p>
+              <p class="setting-help">Full battle fanfare when you hit your target.</p>
             </div>
             <button class="button button-secondary" data-action="preview-target-hit">Preview</button>
           </div>
@@ -1143,37 +1143,37 @@ function renderSettingsView() {
         <h3>Sound Cues</h3>
         <div class="setting-group">
           <label class="toggle-row" for="soundEnabled">
-            <span>Play Pomodoro milestone sounds</span>
+            <span>Play Pomodoro battle cues</span>
             <input id="soundEnabled" type="checkbox" data-setting-boolean="soundEnabled" ${state.settings.soundEnabled ? "checked" : ""}>
           </label>
         </div>
-        <p class="setting-help">You can keep them on for live Pomodoro feedback, or switch them off if you want a silent study setup.</p>
+        <p class="setting-help">Turn on louder war horn and drum cues, or switch them off if you want a silent study setup.</p>
         <div class="sound-preview-list">
           <div class="sound-preview-row">
             <div>
               <strong>Focus start</strong>
-              <p class="setting-help">Plays when a focus block begins.</p>
+              <p class="setting-help">War horn and drum hit when a focus block begins.</p>
             </div>
             <button class="button button-secondary" data-action="preview-focus-start">Preview</button>
           </div>
           <div class="sound-preview-row">
             <div>
               <strong>Break start</strong>
-              <p class="setting-help">Plays when a break begins.</p>
+              <p class="setting-help">Short rally cue when a break begins.</p>
             </div>
             <button class="button button-secondary" data-action="preview-break-start">Preview</button>
           </div>
           <div class="sound-preview-row">
             <div>
               <strong>Focus complete</strong>
-              <p class="setting-help">Warm chime when a focus block ends.</p>
+              <p class="setting-help">Victory horn when a focus block ends.</p>
             </div>
             <button class="button button-secondary" data-action="preview-focus-complete">Preview</button>
           </div>
           <div class="sound-preview-row">
             <div>
               <strong>Daily target hit</strong>
-              <p class="setting-help">Success cue when you cross your target for the day.</p>
+              <p class="setting-help">Full battle fanfare when you cross your target for the day.</p>
             </div>
             <button class="button button-secondary" data-action="preview-target-hit">Preview</button>
           </div>
@@ -1290,11 +1290,14 @@ function renderDailyChart(days, targetHours) {
           : "rgba(255,255,255,0.16)";
     const label = formatMiniDate(day.dayStart);
     const labelX = x + widthValue / 2;
+    const isLastDay = index === days.length - 1;
+    const showLabel = isLastDay || days.length <= 16 || index % Math.ceil(days.length / 8) === 0;
+    const labelFill = isLastDay ? "#ffcb67" : "#8fa0b8";
 
     return `
       <rect x="${x.toFixed(2)}" y="${y.toFixed(2)}" width="${widthValue.toFixed(2)}" height="${Math.max(valueHeight, 4).toFixed(2)}" rx="8" fill="${fill}" />
-      ${days.length <= 16 || index % Math.ceil(days.length / 8) === 0
-        ? `<text x="${labelX.toFixed(2)}" y="${height - 10}" text-anchor="middle" fill="#8fa0b8" font-size="12">${label}</text>`
+      ${showLabel
+        ? `<text x="${labelX.toFixed(2)}" y="${height - 10}" text-anchor="middle" fill="${labelFill}" font-size="12">${label}</text>`
         : ""}
     `;
   }).join("");
@@ -1462,6 +1465,9 @@ function escapeAttribute(value) {
 
 function createSoundEngine() {
   let audioContext = null;
+  let masterGain = null;
+  let compressor = null;
+  let noiseBuffer = null;
 
   function getContext() {
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;
@@ -1471,6 +1477,19 @@ function createSoundEngine() {
 
     if (!audioContext) {
       audioContext = new AudioContextClass();
+      compressor = audioContext.createDynamicsCompressor();
+      compressor.threshold.value = -22;
+      compressor.knee.value = 18;
+      compressor.ratio.value = 3.5;
+      compressor.attack.value = 0.003;
+      compressor.release.value = 0.22;
+
+      masterGain = audioContext.createGain();
+      masterGain.gain.value = 0.95;
+
+      compressor.connect(masterGain);
+      masterGain.connect(audioContext.destination);
+      noiseBuffer = makeNoiseBuffer(audioContext);
     }
 
     return audioContext;
@@ -1487,90 +1506,185 @@ function createSoundEngine() {
     }
   }
 
-  function playPattern(pattern, delayMs = 0) {
+  function makeNoiseBuffer(context) {
+    const buffer = context.createBuffer(1, context.sampleRate * 0.6, context.sampleRate);
+    const channel = buffer.getChannelData(0);
+    for (let index = 0; index < channel.length; index += 1) {
+      channel[index] = Math.random() * 2 - 1;
+    }
+    return buffer;
+  }
+
+  function withReady(callback) {
     const context = getContext();
-    if (!context || context.state === "suspended") {
+    if (!context) {
       return;
     }
 
-    const startAt = context.currentTime + 0.02 + delayMs / 1000;
+    const run = () => callback(context);
+    if (context.state !== "running") {
+      context.resume().then(run).catch(() => {});
+      return;
+    }
 
-    pattern.forEach((note) => {
+    run();
+  }
+
+  function connectOutput(context, filterType = "lowpass", frequency = 1800, q = 0.7) {
+    const filter = context.createBiquadFilter();
+    filter.type = filterType;
+    filter.frequency.setValueAtTime(frequency, context.currentTime);
+    filter.Q.value = q;
+    filter.connect(compressor);
+    return filter;
+  }
+
+  function scheduleHorn(context, baseTime, event) {
+    const startAt = baseTime + (event.offset ?? 0);
+    const output = connectOutput(context, "lowpass", event.filterFrequency ?? 1300, event.q ?? 0.9);
+    const envelope = context.createGain();
+    envelope.gain.setValueAtTime(0.0001, startAt);
+    envelope.gain.exponentialRampToValueAtTime(event.gain ?? 0.12, startAt + (event.attack ?? 0.03));
+    envelope.gain.exponentialRampToValueAtTime(0.0001, startAt + event.duration);
+    envelope.connect(output);
+
+    const harmonics = event.harmonics ?? [1, 2];
+    harmonics.forEach((multiple, index) => {
       const oscillator = context.createOscillator();
-      const gain = context.createGain();
-      oscillator.type = note.type ?? "sine";
-      oscillator.frequency.setValueAtTime(note.frequency, startAt + note.offset);
-      gain.gain.setValueAtTime(0.0001, startAt + note.offset);
-      gain.gain.exponentialRampToValueAtTime(note.gain ?? 0.045, startAt + note.offset + 0.02);
-      gain.gain.exponentialRampToValueAtTime(0.0001, startAt + note.offset + note.duration);
-      oscillator.connect(gain);
-      gain.connect(context.destination);
-      oscillator.start(startAt + note.offset);
-      oscillator.stop(startAt + note.offset + note.duration + 0.03);
+      oscillator.type = event.type ?? "sawtooth";
+      oscillator.frequency.setValueAtTime((event.frequency ?? 196) * multiple, startAt);
+      oscillator.frequency.exponentialRampToValueAtTime((event.endFrequency ?? event.frequency ?? 196) * multiple, startAt + event.duration);
+      oscillator.detune.value = (event.detune ?? 0) + index * 4;
+      oscillator.connect(envelope);
+
+      if (event.vibratoGain) {
+        const lfo = context.createOscillator();
+        const lfoGain = context.createGain();
+        lfo.frequency.setValueAtTime(event.vibratoRate ?? 5.4, startAt);
+        lfoGain.gain.setValueAtTime(event.vibratoGain, startAt);
+        lfo.connect(lfoGain);
+        lfoGain.connect(oscillator.detune);
+        lfo.start(startAt);
+        lfo.stop(startAt + event.duration + 0.05);
+      }
+
+      oscillator.start(startAt);
+      oscillator.stop(startAt + event.duration + 0.05);
+    });
+  }
+
+  function scheduleDrum(context, baseTime, event) {
+    const startAt = baseTime + (event.offset ?? 0);
+
+    const body = context.createOscillator();
+    body.type = event.type ?? "sine";
+    body.frequency.setValueAtTime(event.frequency ?? 124, startAt);
+    body.frequency.exponentialRampToValueAtTime(event.endFrequency ?? 46, startAt + event.duration);
+
+    const bodyGain = context.createGain();
+    bodyGain.gain.setValueAtTime(0.0001, startAt);
+    bodyGain.gain.exponentialRampToValueAtTime(event.gain ?? 0.24, startAt + 0.01);
+    bodyGain.gain.exponentialRampToValueAtTime(0.0001, startAt + event.duration);
+
+    const bodyOutput = connectOutput(context, "lowpass", event.filterFrequency ?? 220, 0.5);
+    body.connect(bodyGain);
+    bodyGain.connect(bodyOutput);
+    body.start(startAt);
+    body.stop(startAt + event.duration + 0.03);
+
+    if (noiseBuffer && (event.noiseGain ?? 0.1) > 0) {
+      const noise = context.createBufferSource();
+      noise.buffer = noiseBuffer;
+
+      const noiseFilter = connectOutput(context, "bandpass", event.noiseFrequency ?? 720, event.noiseQ ?? 0.9);
+      const noiseGain = context.createGain();
+      noiseGain.gain.setValueAtTime(0.0001, startAt);
+      noiseGain.gain.exponentialRampToValueAtTime(event.noiseGain ?? 0.1, startAt + 0.008);
+      noiseGain.gain.exponentialRampToValueAtTime(0.0001, startAt + (event.noiseDuration ?? 0.09));
+
+      noise.connect(noiseFilter);
+      noiseFilter.connect(noiseGain);
+      noiseGain.connect(compressor);
+      noise.start(startAt);
+      noise.stop(startAt + (event.noiseDuration ?? 0.09) + 0.03);
+    }
+  }
+
+  function playPattern(pattern, delayMs = 0) {
+    withReady((context) => {
+      const startAt = context.currentTime + 0.03 + delayMs / 1000;
+
+      pattern.forEach((event) => {
+        if (event.kind === "drum") {
+          scheduleDrum(context, startAt, event);
+        } else {
+          scheduleHorn(context, startAt, event);
+        }
+      });
     });
   }
 
   return {
     arm,
     preview() {
-      arm();
       playPattern([
-        { frequency: 392.0, offset: 0, duration: 0.12, gain: 0.03, type: "triangle" },
-        { frequency: 523.25, offset: 0.08, duration: 0.16, gain: 0.036, type: "triangle" },
-        { frequency: 659.25, offset: 0.18, duration: 0.22, gain: 0.04, type: "sine" },
+        { kind: "drum", offset: 0, duration: 0.22, gain: 0.24, noiseGain: 0.12 },
+        { kind: "horn", offset: 0.03, duration: 0.44, frequency: 174.61, endFrequency: 196.0, gain: 0.12, filterFrequency: 1180, vibratoGain: 4.5 },
+        { kind: "drum", offset: 0.18, duration: 0.20, gain: 0.18, noiseGain: 0.08, noiseFrequency: 880 },
       ]);
     },
     playFocusStart(delayMs = 0) {
-      arm();
       playPattern([
-        { frequency: 392.0, offset: 0, duration: 0.12, gain: 0.03, type: "triangle" },
-        { frequency: 523.25, offset: 0.08, duration: 0.16, gain: 0.036, type: "triangle" },
-        { frequency: 659.25, offset: 0.18, duration: 0.22, gain: 0.04, type: "sine" },
+        { kind: "drum", offset: 0, duration: 0.22, gain: 0.24, noiseGain: 0.12 },
+        { kind: "horn", offset: 0.02, duration: 0.46, frequency: 174.61, endFrequency: 207.65, gain: 0.135, filterFrequency: 1200, vibratoGain: 4.8 },
+        { kind: "drum", offset: 0.18, duration: 0.18, gain: 0.18, noiseGain: 0.08, noiseFrequency: 920 },
       ], delayMs);
     },
     playBreakStart(delayMs = 0) {
-      arm();
       playPattern([
-        { frequency: 493.88, offset: 0, duration: 0.1, gain: 0.02, type: "sine" },
-        { frequency: 587.33, offset: 0.08, duration: 0.14, gain: 0.024, type: "triangle" },
+        { kind: "drum", offset: 0, duration: 0.16, gain: 0.15, noiseGain: 0.07, noiseFrequency: 980 },
+        { kind: "horn", offset: 0.04, duration: 0.28, frequency: 146.83, endFrequency: 155.56, gain: 0.09, filterFrequency: 980, harmonics: [1, 2] },
       ], delayMs);
     },
     playFocusComplete(isLongBreak) {
-      arm();
       playPattern(
         isLongBreak
           ? [
-              { frequency: 523.25, offset: 0, duration: 0.30, gain: 0.05, type: "triangle" },
-              { frequency: 659.25, offset: 0.18, duration: 0.32, gain: 0.045, type: "triangle" },
-              { frequency: 783.99, offset: 0.36, duration: 0.46, gain: 0.04, type: "sine" },
+              { kind: "drum", offset: 0, duration: 0.22, gain: 0.22, noiseGain: 0.12 },
+              { kind: "drum", offset: 0.16, duration: 0.22, gain: 0.2, noiseGain: 0.1, noiseFrequency: 840 },
+              { kind: "horn", offset: 0.04, duration: 0.34, frequency: 174.61, endFrequency: 196.0, gain: 0.11, filterFrequency: 1160 },
+              { kind: "horn", offset: 0.2, duration: 0.34, frequency: 220.0, endFrequency: 246.94, gain: 0.115, filterFrequency: 1240 },
+              { kind: "horn", offset: 0.38, duration: 0.42, frequency: 261.63, endFrequency: 293.66, gain: 0.12, filterFrequency: 1320, vibratoGain: 4.8 },
             ]
           : [
-              { frequency: 587.33, offset: 0, duration: 0.24, gain: 0.045, type: "triangle" },
-              { frequency: 698.46, offset: 0.12, duration: 0.30, gain: 0.04, type: "sine" },
+              { kind: "drum", offset: 0, duration: 0.18, gain: 0.18, noiseGain: 0.09 },
+              { kind: "horn", offset: 0.02, duration: 0.26, frequency: 196.0, endFrequency: 220.0, gain: 0.11, filterFrequency: 1220 },
+              { kind: "horn", offset: 0.16, duration: 0.28, frequency: 246.94, endFrequency: 261.63, gain: 0.095, filterFrequency: 1280 },
             ],
       );
     },
     playBreakComplete(isLongBreak) {
-      arm();
       playPattern(
         isLongBreak
           ? [
-              { frequency: 493.88, offset: 0, duration: 0.20, gain: 0.04, type: "sine" },
-              { frequency: 659.25, offset: 0.14, duration: 0.26, gain: 0.032, type: "triangle" },
+              { kind: "drum", offset: 0, duration: 0.2, gain: 0.18, noiseGain: 0.1 },
+              { kind: "horn", offset: 0.03, duration: 0.30, frequency: 164.81, endFrequency: 185.0, gain: 0.11, filterFrequency: 1080 },
+              { kind: "horn", offset: 0.18, duration: 0.32, frequency: 207.65, endFrequency: 233.08, gain: 0.1, filterFrequency: 1180 },
             ]
           : [
-              { frequency: 783.99, offset: 0, duration: 0.16, gain: 0.03, type: "sine" },
-              { frequency: 1046.5, offset: 0.1, duration: 0.18, gain: 0.02, type: "sine" },
+              { kind: "drum", offset: 0, duration: 0.14, gain: 0.14, noiseGain: 0.06, noiseFrequency: 980 },
+              { kind: "horn", offset: 0.04, duration: 0.24, frequency: 233.08, endFrequency: 261.63, gain: 0.09, filterFrequency: 1260, harmonics: [1, 2, 3] },
             ],
       );
     },
     playTargetHit() {
-      arm();
       playPattern([
-        { frequency: 523.25, offset: 0, duration: 0.22, gain: 0.045, type: "triangle" },
-        { frequency: 659.25, offset: 0.12, duration: 0.24, gain: 0.04, type: "triangle" },
-        { frequency: 783.99, offset: 0.24, duration: 0.28, gain: 0.04, type: "sine" },
-        { frequency: 1046.5, offset: 0.36, duration: 0.40, gain: 0.035, type: "sine" },
+        { kind: "drum", offset: 0, duration: 0.24, gain: 0.26, noiseGain: 0.14 },
+        { kind: "drum", offset: 0.16, duration: 0.24, gain: 0.23, noiseGain: 0.12, noiseFrequency: 820 },
+        { kind: "drum", offset: 0.32, duration: 0.26, gain: 0.25, noiseGain: 0.12, noiseFrequency: 760 },
+        { kind: "horn", offset: 0.03, duration: 0.34, frequency: 196.0, endFrequency: 220.0, gain: 0.12, filterFrequency: 1200 },
+        { kind: "horn", offset: 0.18, duration: 0.34, frequency: 246.94, endFrequency: 261.63, gain: 0.12, filterFrequency: 1300 },
+        { kind: "horn", offset: 0.34, duration: 0.46, frequency: 293.66, endFrequency: 329.63, gain: 0.13, filterFrequency: 1400, vibratoGain: 5.2 },
       ]);
     },
   };
