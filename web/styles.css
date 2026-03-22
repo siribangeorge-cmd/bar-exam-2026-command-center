@@ -1,30 +1,30 @@
 :root {
   color-scheme: dark;
-  --bg: #121110;
+  --bg: #0a1018;
   --bg-layer:
-    radial-gradient(circle at top left, rgba(196, 170, 124, 0.12), transparent 24%),
-    radial-gradient(circle at top right, rgba(108, 124, 155, 0.08), transparent 18%),
-    linear-gradient(180deg, #171513 0%, #0f0e0d 100%);
-  --surface: rgba(24, 23, 22, 0.96);
-  --surface-strong: rgba(30, 28, 26, 0.98);
-  --surface-soft: rgba(244, 239, 232, 0.04);
-  --surface-highlight: linear-gradient(180deg, rgba(255, 252, 246, 0.045), rgba(255, 255, 255, 0.012));
-  --border: rgba(255, 248, 239, 0.08);
-  --border-strong: rgba(196, 170, 124, 0.24);
-  --text: #f4efe7;
-  --muted: #ada295;
-  --gold: #b89a6b;
-  --gold-strong: #dfc295;
-  --blue: #8da7c2;
-  --green: #4ba57b;
-  --amber: #c89a47;
-  --red: #cf6c68;
-  --shadow: 0 28px 80px rgba(0, 0, 0, 0.28);
-  --shadow-soft: 0 14px 34px rgba(0, 0, 0, 0.16);
-  --radius-xl: 26px;
-  --radius-lg: 20px;
-  --radius-md: 14px;
-  --radius-sm: 10px;
+    radial-gradient(circle at top left, rgba(128, 176, 255, 0.13), transparent 28%),
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.08), transparent 20%),
+    linear-gradient(180deg, #151c28 0%, #090d14 100%);
+  --surface: rgba(20, 26, 36, 0.82);
+  --surface-strong: rgba(24, 31, 43, 0.92);
+  --surface-soft: rgba(255, 255, 255, 0.04);
+  --surface-highlight: linear-gradient(180deg, rgba(255, 255, 255, 0.085), rgba(255, 255, 255, 0.018));
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(154, 187, 231, 0.24);
+  --text: #f5f7fb;
+  --muted: #a5b1c3;
+  --gold: #93b4df;
+  --gold-strong: #dfeafb;
+  --blue: #83b8ff;
+  --green: #5cc39d;
+  --amber: #e0b267;
+  --red: #de7e86;
+  --shadow: 0 32px 90px rgba(0, 0, 0, 0.36);
+  --shadow-soft: 0 16px 38px rgba(0, 0, 0, 0.22);
+  --radius-xl: 28px;
+  --radius-lg: 22px;
+  --radius-md: 16px;
+  --radius-sm: 12px;
   --shell-width: 1680px;
   --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -41,9 +41,9 @@ body {
 body {
   margin: 0;
   min-height: 100vh;
-  font-family: "Space Grotesk", "Avenir Next", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", "Segoe UI", sans-serif;
   font-size: 14px;
-  line-height: 1.5;
+  line-height: 1.45;
   background: var(--bg);
   background-image: var(--bg-layer);
   color: var(--text);
@@ -80,7 +80,7 @@ select {
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow);
-  backdrop-filter: blur(14px);
+  backdrop-filter: blur(24px) saturate(145%);
 }
 
 .card::after {
@@ -88,7 +88,7 @@ select {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: linear-gradient(180deg, rgba(255, 249, 241, 0.035), transparent 22%);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.012) 24%, transparent 44%);
 }
 
 .nav-shell {
@@ -101,8 +101,8 @@ select {
   gap: 14px;
   align-content: start;
   background:
-    linear-gradient(180deg, rgba(255, 248, 237, 0.02), transparent 14%),
-    rgba(20, 19, 18, 0.98);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.085), rgba(255, 255, 255, 0.012) 14%, transparent 24%),
+    rgba(13, 18, 27, 0.9);
 }
 
 .nav-aura {
@@ -111,8 +111,8 @@ select {
   width: 180px;
   height: 180px;
   border-radius: 999px;
-  background: radial-gradient(circle, rgba(196, 170, 124, 0.16), transparent 70%);
-  filter: blur(18px);
+  background: radial-gradient(circle, rgba(120, 169, 244, 0.22), transparent 70%);
+  filter: blur(22px);
   pointer-events: none;
 }
 
@@ -136,7 +136,9 @@ select {
 .marquee-title,
 .hero-title {
   margin: 0;
-  font-family: "Fraunces", "Georgia", serif;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.04em;
 }
 
 .brand-copy h1 {
@@ -149,10 +151,10 @@ select {
 }
 
 .brand-overline {
-  color: var(--gold-strong);
-  font-size: 0.62rem;
+  color: rgba(223, 234, 251, 0.82);
+  font-size: 0.6rem;
   text-transform: uppercase;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.22em;
   font-weight: 700;
 }
 
@@ -174,13 +176,13 @@ select {
   margin-top: auto;
   padding: 16px;
   border-radius: 16px;
-  background: linear-gradient(180deg, rgba(196, 170, 124, 0.06), rgba(255, 255, 255, 0.014));
-  border: 1px solid rgba(196, 170, 124, 0.14);
+  background: linear-gradient(180deg, rgba(132, 176, 245, 0.12), rgba(255, 255, 255, 0.025));
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .sidebar-quote-kicker {
   margin: 0 0 8px;
-  color: var(--gold-strong);
+  color: rgba(223, 234, 251, 0.82);
   font-size: 0.62rem;
   text-transform: uppercase;
   letter-spacing: 0.18em;
@@ -189,9 +191,9 @@ select {
 
 .sidebar-quote-text {
   margin: 0;
-  font-family: "Fraunces", "Georgia", serif;
   font-size: 1rem;
-  line-height: 1.28;
+  line-height: 1.34;
+  font-weight: 600;
   color: var(--text);
 }
 
@@ -202,9 +204,9 @@ select {
   gap: 12px;
   align-items: center;
   padding: 14px 15px;
-  border: 1px solid rgba(255, 250, 242, 0.055);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 18px;
-  background: rgba(255, 252, 248, 0.018);
+  background: rgba(255, 255, 255, 0.028);
   color: var(--text);
   cursor: pointer;
   text-align: left;
@@ -213,13 +215,13 @@ select {
 
 .nav-button:hover {
   transform: translateY(-1px);
-  border-color: rgba(255, 249, 238, 0.1);
-  background: rgba(255, 251, 245, 0.028);
+  border-color: rgba(255, 255, 255, 0.11);
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .nav-button.is-active {
-  background: linear-gradient(180deg, rgba(196, 170, 124, 0.09), rgba(255, 255, 255, 0.018));
-  border-color: rgba(196, 170, 124, 0.26);
+  background: linear-gradient(180deg, rgba(145, 178, 222, 0.18), rgba(255, 255, 255, 0.03));
+  border-color: rgba(161, 189, 227, 0.3);
   box-shadow: var(--shadow-soft);
 }
 
@@ -227,11 +229,11 @@ select {
   width: 4px;
   height: 38px;
   border-radius: 999px;
-  background: rgba(255, 251, 244, 0.06);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .nav-button.is-active .nav-button-line {
-  background: linear-gradient(180deg, var(--gold-strong), #ab8961);
+  background: linear-gradient(180deg, #f7fbff, #91b7e9);
 }
 
 .nav-button-body {
@@ -250,7 +252,7 @@ select {
 }
 
 .nav-button-meta {
-  color: var(--gold-strong);
+  color: rgba(223, 234, 251, 0.9);
   font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -279,7 +281,7 @@ select {
   position: relative;
   overflow: hidden;
   background: var(--surface-highlight);
-  border: 1px solid rgba(255, 248, 239, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 18px;
 }
 
@@ -304,8 +306,9 @@ select {
   gap: 20px;
   align-items: end;
   background:
-    radial-gradient(circle at top right, rgba(196, 170, 124, 0.08), transparent 22%),
-    rgba(22, 21, 20, 0.96);
+    radial-gradient(circle at top right, rgba(126, 183, 255, 0.16), transparent 24%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.012) 20%, transparent 48%),
+    rgba(19, 25, 36, 0.9);
 }
 
 .workspace-kicker,
@@ -332,7 +335,7 @@ select {
 .marquee-copy,
 .subject-list p,
 .subject-pane p,
-.pdf-pane p,
+.detail-pane p,
 .setting-help,
 .chart-caption,
 .footer-note,
@@ -358,10 +361,10 @@ select {
 
 .dashboard-countdown {
   margin: 0;
-  font-family: "Fraunces", "Georgia", serif;
   font-size: clamp(2.7rem, 5.6vw, 4.6rem);
   line-height: 0.98;
-  color: var(--gold-strong);
+  color: var(--text);
+  letter-spacing: -0.06em;
   font-variant-numeric: tabular-nums;
 }
 
@@ -380,8 +383,8 @@ select {
 .pulse-pill {
   padding: 12px 14px;
   border-radius: 16px;
-  background: rgba(255, 250, 243, 0.03);
-  border: 1px solid rgba(255, 250, 243, 0.06);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   display: grid;
   gap: 4px;
 }
@@ -435,22 +438,23 @@ select {
 .settings-card,
 .subject-list,
 .subject-pane,
-.pdf-pane {
+.detail-pane {
   padding: 20px;
 }
 
 .marquee-card {
   min-height: 100%;
   background:
-    radial-gradient(circle at top right, rgba(196, 170, 124, 0.1), transparent 26%),
-    linear-gradient(180deg, rgba(255, 249, 241, 0.025), rgba(255, 255, 255, 0.008)),
-    rgba(24, 23, 21, 0.97);
+    radial-gradient(circle at top right, rgba(133, 181, 248, 0.18), transparent 28%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.015) 22%, transparent 44%),
+    rgba(20, 26, 37, 0.96);
 }
 
 .marquee-title {
   max-width: 14ch;
   font-size: clamp(1.8rem, 3.8vw, 3.15rem);
   line-height: 1.02;
+  letter-spacing: -0.05em;
 }
 
 .marquee-copy {
@@ -490,7 +494,7 @@ select {
 .settings-card h3,
 .legend-card h3,
 .subject-list h3,
-.pdf-pane h3 {
+.detail-pane h3 {
   margin: 0 0 14px;
   font-size: 0.92rem;
 }
@@ -509,7 +513,7 @@ select {
 .metric-value {
   font-size: clamp(1.6rem, 3.2vw, 2.5rem);
   line-height: 1.02;
-  color: var(--gold-strong);
+  color: var(--text);
   font-weight: 700;
 }
 
@@ -537,14 +541,14 @@ select {
   height: 10px;
   border-radius: 999px;
   overflow: hidden;
-  background: rgba(255, 251, 245, 0.08);
+  background: rgba(255, 255, 255, 0.08);
   margin-top: 12px;
 }
 
 .progress-fill {
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, #9e8259, var(--gold-strong));
+  background: linear-gradient(90deg, #79aef3, #f1f6ff);
 }
 
 .pill,
@@ -555,15 +559,15 @@ select {
   gap: 8px;
   padding: 7px 11px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 248, 238, 0.08);
-  background: rgba(255, 251, 246, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
   font-size: 0.84rem;
 }
 
 .phase-chip {
-  background: rgba(196, 170, 124, 0.1);
+  background: rgba(131, 184, 255, 0.13);
   color: var(--gold-strong);
-  border-color: rgba(196, 170, 124, 0.18);
+  border-color: rgba(131, 184, 255, 0.2);
 }
 
 .session-state {
@@ -620,17 +624,24 @@ select {
   transform: translateY(-1px);
 }
 
+.button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
 .button-primary {
-  background: linear-gradient(180deg, #d4b98f, #be9e70);
-  color: #1d1610;
+  background: linear-gradient(180deg, #f6f8fc, #d8e2f0);
+  color: #111926;
   font-weight: 700;
-  border-color: rgba(223, 194, 149, 0.32);
+  border-color: rgba(255, 255, 255, 0.38);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.18);
 }
 
 .button-secondary {
-  background: rgba(255, 250, 243, 0.035);
+  background: rgba(255, 255, 255, 0.045);
   color: var(--text);
-  border: 1px solid rgba(255, 248, 238, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .button-danger {
@@ -663,8 +674,8 @@ select {
   width: 100%;
   padding: 12px;
   border-radius: 18px;
-  background: linear-gradient(180deg, rgba(255, 249, 241, 0.02), rgba(255, 255, 255, 0.008));
-  border: 1px solid rgba(255, 248, 238, 0.05);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.012));
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .chart-shell-tight {
@@ -708,7 +719,7 @@ select {
 
 .insight-row {
   padding: 13px 0;
-  border-bottom: 1px solid rgba(255, 248, 238, 0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .insight-row:last-child {
@@ -723,7 +734,7 @@ select {
 
 .subject-list p,
 .subject-pane p,
-.pdf-pane p {
+.detail-pane p {
   line-height: 1.55;
 }
 
@@ -740,8 +751,8 @@ select {
 }
 
 .subject-button.is-active {
-  border-color: rgba(196, 170, 124, 0.28);
-  background: linear-gradient(180deg, rgba(196, 170, 124, 0.08), rgba(255, 255, 255, 0.016));
+  border-color: rgba(131, 184, 255, 0.26);
+  background: linear-gradient(180deg, rgba(131, 184, 255, 0.14), rgba(255, 255, 255, 0.016));
 }
 
 .subject-button small {
@@ -762,8 +773,8 @@ select {
   width: 100%;
   padding: 10px 12px;
   border-radius: 14px;
-  border: 1px solid rgba(255, 248, 238, 0.08);
-  background: rgba(255, 251, 246, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.045);
   color: var(--text);
   font-size: 0.92rem;
   outline: none;
@@ -772,8 +783,36 @@ select {
 
 .input:focus,
 .select:focus {
-  border-color: rgba(196, 170, 124, 0.28);
-  box-shadow: 0 0 0 4px rgba(196, 170, 124, 0.07);
+  border-color: rgba(131, 184, 255, 0.34);
+  box-shadow: 0 0 0 4px rgba(131, 184, 255, 0.1);
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 180px;
+}
+
+.notice {
+  margin-bottom: 14px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  line-height: 1.5;
+}
+
+.notice-info {
+  background: rgba(85, 166, 255, 0.1);
+  border-color: rgba(85, 166, 255, 0.16);
+}
+
+.notice-success {
+  background: rgba(69, 212, 131, 0.12);
+  border-color: rgba(69, 212, 131, 0.18);
+}
+
+.notice-error {
+  background: rgba(207, 108, 104, 0.12);
+  border-color: rgba(207, 108, 104, 0.18);
 }
 
 .legend-grid {
@@ -827,12 +866,39 @@ select {
   margin-bottom: 8px;
 }
 
-.pdf-frame {
-  width: 100%;
-  min-height: 800px;
-  border: 0;
-  border-radius: 20px;
-  background: #171513;
+.empty-state {
+  display: grid;
+  gap: 6px;
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px dashed rgba(255, 255, 255, 0.08);
+}
+
+.empty-state-title {
+  font-size: 0.96rem;
+}
+
+.detail-stack {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.detail-card {
+  padding: 14px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.detail-card strong {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.upload-group {
+  margin-top: 16px;
 }
 
 .settings-grid {
@@ -865,7 +931,7 @@ select {
   align-items: center;
   gap: 16px;
   padding: 12px 0;
-  border-top: 1px solid rgba(255, 248, 238, 0.06);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .sound-preview-row strong {
@@ -883,7 +949,7 @@ select {
 .toggle-row input[type="checkbox"] {
   width: 20px;
   height: 20px;
-  accent-color: var(--gold);
+  accent-color: var(--blue);
 }
 
 .footer-note {
@@ -926,9 +992,6 @@ select {
     grid-template-columns: 1fr;
   }
 
-  .pdf-frame {
-    min-height: 620px;
-  }
 }
 
 @media (max-width: 1100px) {
@@ -973,7 +1036,7 @@ select {
   .settings-card,
   .subject-list,
   .subject-pane,
-  .pdf-pane {
+  .detail-pane {
     padding: 18px;
   }
 
